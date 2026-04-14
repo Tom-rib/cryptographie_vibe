@@ -2,4 +2,79 @@
 
 ## 🎯 Résumé Exécutif
 
-| Métrique | Valeur |\n|----------|--------|\n| **Date de démarrage** | 2026-04-14 |\n| **État actuel** | ⬜ PAS COMMENCÉ |\n| **Étape actuelle** | - |\n| **Progression globale** | 0% |\n| **Dernier commit** | - |\n| **Temps estimé total** | 8-12 heures |\n\n---\n\n## 📋 Progression par Étape\n\n### JOUR 1 - Authentification Basique\n\n#### 🔹 Partie 1: YOLO (Chat basique)\n- **Status**: ⬜ À FAIRE\n- **Objectif**: Chat multi-utilisateurs sans authentification\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 1-2h\n- **Validé**: ❌ NON\n- **Notes**: \n\n#### 🔹 Partie 2: Authentification MD5\n- **Status**: ⬜ À FAIRE\n- **Objectif**: Ajouter authentification + MD5 + règles de mot de passe\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 1-1.5h\n- **Validé**: ❌ NON\n- **Notes**:\n\n---\n\n### JOUR 2 - Chiffrement\n\n#### 🔹 Partie 1: Hacker Marseillais (Hash Moderne)\n- **Status**: ⬜ À FAIRE\n- **Objectif**: Cassage MD5 + migration vers bcrypt\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 1.5-2h\n- **Hash cassé**: -\n- **Validé**: ❌ NON\n- **Notes**:\n\n#### 🔹 Partie 2: Hacker Russe (Symétrique)\n- **Status**: ⬜ À FAIRE\n- **Objectif**: Chiffrement symétrique des messages\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 2-2.5h\n- **Validé**: ❌ NON\n- **Notes**:\n\n---\n\n### JOUR 3 - Crypto Asymétrique & E2EE\n\n#### 🔹 Partie 1: Hacker NSA (Asymétrique)\n- **Status**: ⬜ À FAIRE\n- **Objectif**: RSA + Key Encapsulation\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 2-3h\n- **Validé**: ❌ NON\n- **Notes**:\n\n#### 🔹 Partie 2: E2EE Complet (Signatures)\n- **Status**: ⬜ À FAIRE\n- **Objectif**: E2EE + signatures numériques\n- **Fichiers créés**: -\n- **Fichiers modifiés**: -\n- **Durée estimée**: 2-3h\n- **Validé**: ❌ NON\n- **Notes**:\n\n---\n\n## 📁 Fichiers du Projet\n\n### Source Code\n- [ ] `src/server.py` - Serveur principal\n- [ ] `src/client.py` - Client principal\n- [ ] `src/utils/__init__.py`\n- [ ] `src/utils/logger.py` - Logging\n- [ ] `src/utils/password_manager.py` - Gestion MDP\n- [ ] `src/utils/entropy_calculator.py` - Calcul d'entropie\n- [ ] `src/utils/bcrypt_hasher.py` - Hashing bcrypt\n- [ ] `src/utils/key_derivation.py` - KDF\n- [ ] `src/utils/crypto.py` - AES chiffrement\n- [ ] `src/utils/asymmetric_crypto.py` - RSA\n- [ ] `src/utils/e2ee.py` - E2EE protocol\n\n### Configuration\n- [ ] `src/config/config.json` - Config serveur\n- [ ] `data/password_rules.json` - Règles MDP\n\n### Data\n- [ ] `data/this_is_safe.txt` - Base de données mots de passe\n- [ ] `data/user_keys_do_not_steal_plz.txt` - Clés utilisateur (Day 2)\n- [ ] `data/md5_decrypted.txt` - Hash cassé (Day 2 Part 1)\n- [ ] `data/logs/` - Dossier logs\n\n### Scripts\n- [ ] `scripts/migrate_passwords.py` - Migration MD5→bcrypt\n\n### Documentation\n- [ ] `README.md` - Guide d'usage\n- [ ] `ARCHITECTURE.md` - Architecture du projet\n\n---\n\n## 🔧 Dépendances Installées\n\n### Core Libraries\n- [ ] `cryptography` - Chiffrement\n- [ ] `bcrypt` - Hashing robuste\n- [ ] `argon2-cffi` - (optionnel)\n\n### Testing\n- [ ] `pytest` - (optionnel)\n\n---\n\n## 🐛 Problèmes Rencontrés\n\n### Issues Actuels\n\n| ID | Problème | Statut | Notes |\n|----|---------:|--------|-------|\n| - | - | - | - |\n\n### Issues Résolus\n\n| ID | Problème | Solution |\n|----|----------|----------|\n| - | - | - |\n\n---\n\n## 🎓 Concepts Maîtrisés\n\n### Day 1\n- [ ] Architecture client/serveur\n- [ ] Socket TCP en Python\n- [ ] Multi-threading\n- [ ] Hashing (MD5)\n- [ ] Entropie des mots de passe\n\n### Day 2\n- [ ] Attaques par brute force\n- [ ] Hashcat\n- [ ] Hashing itératif (bcrypt)\n- [ ] Key derivation (PBKDF2)\n- [ ] Chiffrement symétrique (AES-CBC)\n\n### Day 3\n- [ ] Crypto asymétrique (RSA)\n- [ ] Key encapsulation\n- [ ] Signatures numériques\n- [ ] End-to-End Encryption\n- [ ] Intégrité des messages\n\n---\n\n## 📊 Statistiques du Code\n\n```\nLignes de code: 0\nNombre de fichiers: 0\nComplexité: 0\nCouverture de tests: 0%\n```\n\n---\n\n## 🎯 Prochaines Actions\n\n1. ⬜ Commencer JOUR1_PARTIE1\n2. ⬜ Valider JOUR1_PARTIE1\n3. ⬜ Commencer JOUR1_PARTIE2\n4. ⬜ ...\n\n---\n\n## 📝 Notes Techniques\n\n### Architecture Décisions\n\n- **Python version**: 3.8+\n- **Framework**: Socket standard (pas Django/Flask)\n- **Threading**: `threading` (pas asyncio)\n- **Crypto lib**: `cryptography` (standard)\n- **Hash algo**: MD5 (Day 1), bcrypt (Day 2+)\n- **Cipher**: AES-256-CBC (Day 2+)\n- **RSA key size**: 2048 bits (Day 3+)\n\n### Performance Notes\n\n- Bcrypt cost factor: 12 (ajustable)\n- PBKDF2 iterations: 100,000 (standard)\n- RSA OAEP avec SHA256\n- IV new pour chaque message\n\n### Security Considerations\n\n- Mots de passe JAMAIS en plaintext\n- Comparaison temps constant (hmac.compare_digest)\n- Salt aléatoire et différent par user\n- Clés privées jamais transmises\n- Signatures obligatoires (Day 3)\n\n---\n\n## 🚀 Déploiement\n\n### Requirements\n```bash\nPython 3.8+\npip install cryptography bcrypt\n```\n\n### Lancement\n```bash\n# Terminal 1: Serveur\npython src/server.py\n\n# Terminal 2: Client Alice\npython src/client.py\n\n# Terminal 3: Client Bob\npython src/client.py\n```\n\n---\n\n## 📖 Ressources Utilisées\n\n- [ ] Crypto 101\n- [ ] ANSSI Guidelines\n- [ ] RFC cryptographiques\n- [ ] Documentation cryptography.io\n- [ ] xkcd sur l'entropie\n\n---\n\n## ✅ Final Checklist\n\n- [ ] Tous les tests passent\n- [ ] Code committé\n- [ ] Documentation complète\n- [ ] Architecture expliquée\n- [ ] Soutenance prête\n- [ ] Projet défendable\n\n---\n\n**Dernière mise à jour**: 2026-04-14  \n**Mis à jour par**: Agent Crypto Vibeness\n
+| Métrique | Valeur |
+|----------|--------|
+| **Date de démarrage** | 2026-04-14 |
+| **État actuel** | 🚀 EN COURS |
+| **Étape actuelle** | JOUR1_PARTIE1 ✅ |
+| **Progression globale** | 17% (1/6 étapes) |
+| **Dernier commit** | 04aea3a - JOUR1 PARTIE1 |
+| **Temps estimé total** | 8-12 heures |
+
+---
+
+## 📋 Progression par Étape
+
+### JOUR 1 - Authentification Basique
+
+#### 🔹 Partie 1: YOLO (Chat basique)
+- **Status**: ✅ COMPLÉTÉE
+- **Objectif**: Chat multi-utilisateurs sans authentification
+- **Durée réelle**: ~30 min
+- **Validé**: ✅ OUI (Tous critères validés)
+- **Notes**: 
+  - Serveur multi-threadé fonctionnel
+  - Rooms avec broadcast des messages
+  - Logging complet avec timestamps
+  - Couleurs déterministes pour les utilisateurs
+  - Commandes: /help, /rooms, /users, /join, /create, /quit
+
+#### 🔹 Partie 2: Authentification MD5
+- **Status**: ⏳ À FAIRE
+- **Objectif**: Ajouter authentification + MD5 + règles de mot de passe
+- **Durée estimée**: 1-1.5h
+
+---
+
+### JOUR 2 - Chiffrement
+
+#### 🔹 Partie 1: Hacker Marseillais (Hash Moderne)
+- **Status**: ⬜ À FAIRE
+- **Durée estimée**: 1.5-2h
+
+#### 🔹 Partie 2: Hacker Russe (Symétrique)
+- **Status**: ⬜ À FAIRE
+- **Durée estimée**: 2-2.5h
+
+---
+
+### JOUR 3 - Crypto Asymétrique & E2EE
+
+#### 🔹 Partie 1: Hacker NSA (Asymétrique)
+- **Status**: ⬜ À FAIRE
+- **Durée estimée**: 2-3h
+
+#### 🔹 Partie 2: E2EE Complet (Signatures)
+- **Status**: ⬜ À FAIRE
+- **Durée estimée**: 2-3h
+
+---
+
+## ✅ Critères Validés (JOUR1_PARTIE1)
+
+- [x] Serveur écoute sur port 5555
+- [x] Client peut se connecter
+- [x] Usernames uniques
+- [x] Room "general" existe par défaut
+- [x] `/join` fonctionne
+- [x] `/create` fonctionne
+- [x] `/rooms` liste les rooms
+- [x] Messages diffusés correctement
+- [x] Logs générés avec timestamps
+- [x] `/help` affiche l'aide
+- [x] `/users` liste les utilisateurs
+- [x] `/quit` déconnecte proprement
+
+---
+
+**Status**: JOUR1_PARTIE1 ✅ COMPLÉTÉE
