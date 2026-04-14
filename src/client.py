@@ -18,6 +18,7 @@ sys.path.insert(0, current_dir)
 try:
     from utils.crypto import AES256Cipher
     from utils.key_derivation import KeyDerivation
+    from utils.asymmetric_crypto import RSACrypto
     CRYPTO_AVAILABLE = True
 except ImportError as e:
     print(f"Warning: Crypto modules not available: {e}")
@@ -41,6 +42,18 @@ class ChatClient:
         self.encryption_key = None
         self.cipher = None
         self.local_key_dir = None
+        
+        # RSA keypair management (JOUR3_PARTIE1)
+        self.private_key = None
+        self.public_key = None
+        self.keypair_loaded = False
+        
+        # Public key registry (JOUR3_PARTIE1)
+        self.public_key_registry = {}  # {username: public_key_pem_b64}
+        
+        # Session keys for 1-on-1 encrypted messaging (JOUR3_PARTIE1)
+        self.session_keys = {}  # {peer_username: (session_key, cipher)}
+        self.session_keys_lock = threading.Lock()
 
     def _setup_encryption_from_password(self, password, salt_b64=None):
         """
@@ -102,6 +115,126 @@ class ChatClient:
             
         except Exception as e:
             print(f"⚠️  Warning: Could not save key locally: {e}")
+
+    def _setup_rsa_keypair(self):
+        """
+        Generate or load RSA keypair.
+        
+        On first run: generate new keypair and persist to files
+        On subsequent runs: load keypair from files
+        
+        Files:
+        - ~/.crypto-vibeness/username/username.pub (public key PEM)
+        - ~/.crypto-vibeness/username/username.priv (private key PEM)
+        """
+        if not CRYPTO_AVAILABLE or not self.username:
+            return
+        
+        try:
+            keypair_dir = os.path.expanduser(f"~/.crypto-vibeness/{self.username}")
+            os.makedirs(keypair_dir, exist_ok=True)
+            
+            private_key_file = os.path.join(keypair_dir, f"{self.username}.priv")
+            public_key_file = os.path.join(keypair_dir, f"{self.username}.pub")
+            
+            # Check if keypair already exists
+            if os.path.exists(private_key_file) and os.path.exists(public_key_file):
+                # Load existing keypair
+                with open(private_key_file, 'rb') as f:
+                    private_pem = f.read()
+                with open(public_key_file, 'rb') as f:
+                    public_pem = f.read()
+                
+                self.private_key = RSACrypto.pem_to_private_key(private_pem)
+                self.public_key = RSACrypto.pem_to_public_key(public_pem)
+                print(f"🔑 RSA keypair loaded from local storage")
+                self.keypair_loaded = True
+            else:
+                # Generate new keypair
+                self.private_key, self.public_key = RSACrypto.generate_keypair()
+                
+                # Save to files
+                private_pem = RSACrypto.private_to_pem(self.private_key)
+                public_pem = RSACrypto.public_to_pem(self.public_key)
+                
+                with open(private_key_file, 'wb') as f:
+                    f.write(private_pem)
+                with open(public_key_file, 'wb') as f:
+                    f.write(public_pem)
+                
+                # Set restrictive permissions for private key
+                os.chmod(private_key_file, 0o600)
+                os.chmod(public_key_file, 0o644)
+                
+                print(f"🔑 RSA keypair generated and saved")
+                self.keypair_loaded = True
+        
+        except Exception as e:
+            print(f"⚠️  Warning: Failed to setup RSA keypair: {e}")
+            self.keypair_loaded = False
+    
+    def establish_session_key_with_peer(self, peer_username):
+        """
+        Establish a session key with a peer user (JOUR3_PARTIE1).
+        
+        Protocol:
+        1. Generate random 256-bit session_key
+        2. Encrypt with peer's public key (from registry)
+        3. Send "session_key_offer" message
+        4. Peer receives and decrypts with their private key
+        5. Both store session_key for 1-on-1 messaging
+        
+        Args:
+            peer_username (str): Username to establish session with
+        
+        Returns:
+            tuple: (session_key, cipher) or (None, None) if failed
+        """
+        if not CRYPTO_AVAILABLE or not self.private_key:
+            return None, None
+        
+        try:
+            # Check if session already established
+            with self.session_keys_lock:
+                if peer_username in self.session_keys:
+                    return self.session_keys[peer_username]
+            
+            # Get peer's public key from registry
+            if peer_username not in self.public_key_registry:
+                print(f"⚠️  Warning: {peer_username}'s public key not in registry")
+                return None, None
+            
+            peer_public_pem_b64 = self.public_key_registry[peer_username]
+            peer_public_pem = base64.b64decode(peer_public_pem_b64)
+            peer_public_key = RSACrypto.pem_to_public_key(peer_public_pem)
+            
+            # Generate session key
+            session_key = os.urandom(32)
+            
+            # Encrypt with peer's public key
+            encrypted_session_b64 = RSACrypto.encrypt_session_key(peer_public_key, session_key)
+            
+            # Send session key offer to peer
+            self.send_message({
+                "type": "session_key_offer",
+                "from": self.username,
+                "to": peer_username,
+                "encrypted_session_key_b64": encrypted_session_b64
+            })
+            
+            # Create cipher for this session
+            cipher = AES256Cipher(session_key)
+            
+            # Store session key
+            with self.session_keys_lock:
+                self.session_keys[peer_username] = (session_key, cipher)
+            
+            print(f"🔐 Session key established with {peer_username}")
+            return session_key, cipher
+        
+        except Exception as e:
+            print(f"⚠️  Warning: Failed to establish session key with {peer_username}: {e}")
+            return None, None
 
     def connect(self):
         """Connect to server"""
@@ -177,6 +310,25 @@ class ChatClient:
                 if hasattr(self, '_last_password'):
                     self._setup_encryption_from_password(self._last_password, msg.get("salt_b64"))
                     delattr(self, '_last_password')
+            
+            # Send public key to server (JOUR3_PARTIE1)
+            if CRYPTO_AVAILABLE and self.public_key:
+                try:
+                    public_pem = RSACrypto.public_to_pem(self.public_key)
+                    public_b64 = base64.b64encode(public_pem).decode('ascii')
+                    self.send_message({
+                        "type": "public_key",
+                        "public_key_b64": public_b64
+                    })
+                    print(f"🔑 Public key sent to server")
+                    
+                    # Request public key registry
+                    time.sleep(0.1)  # Give server time to register our key
+                    self.send_message({
+                        "type": "registry_request"
+                    })
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not send public key: {e}")
 
         elif msg_type == "auth_error":
             print(f"\n⚠️  {msg.get('content')}")
@@ -227,11 +379,54 @@ class ChatClient:
             for cmd in msg.get("content", []):
                 print(f"  {cmd}")
             print()
+        
+        elif msg_type == "public_key_registry":
+            # Receive registry from server (JOUR3_PARTIE1)
+            registry = msg.get("registry", {})
+            self.public_key_registry = registry
+            print(f"🔑 Received public key registry ({len(registry)} users)")
+        
+        elif msg_type == "session_key_offer":
+            # Receive session key offer from peer (JOUR3_PARTIE1)
+            if not CRYPTO_AVAILABLE or not self.private_key:
+                return
+            
+            peer_username = msg.get("from", "")
+            encrypted_session_b64 = msg.get("encrypted_session_key_b64", "")
+            
+            if peer_username and encrypted_session_b64:
+                try:
+                    # Decrypt session key with our private key
+                    session_key = RSACrypto.decrypt_session_key(self.private_key, encrypted_session_b64)
+                    
+                    # Create cipher and store
+                    cipher = AES256Cipher(session_key)
+                    with self.session_keys_lock:
+                        self.session_keys[peer_username] = (session_key, cipher)
+                    
+                    print(f"🔐 Received session key from {peer_username}")
+                    
+                    # Send acknowledgment back
+                    ack_session = os.urandom(32)
+                    peer_public_pem_b64 = self.public_key_registry.get(peer_username, "")
+                    if peer_public_pem_b64:
+                        peer_public_pem = base64.b64decode(peer_public_pem_b64)
+                        peer_public_key = RSACrypto.pem_to_public_key(peer_public_pem)
+                        encrypted_ack_b64 = RSACrypto.encrypt_session_key(peer_public_key, ack_session)
+                        
+                        with self.session_keys_lock:
+                            self.session_keys[peer_username] = (session_key, cipher)
+                        
+                except Exception as e:
+                    print(f"⚠️  Warning: Failed to decrypt session key from {peer_username}: {e}")
 
     def request_username(self):
         """Request username from user"""
         username = input("Choose username: ").strip()
         self.username = username
+        # Generate/load RSA keypair (JOUR3_PARTIE1)
+        if CRYPTO_AVAILABLE:
+            self._setup_rsa_keypair()
         self.send_message({"username": username})
 
     def send_loop(self):

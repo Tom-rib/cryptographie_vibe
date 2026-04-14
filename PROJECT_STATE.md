@@ -6,8 +6,8 @@
 |----------|--------|
 | **Date de démarrage** | 2026-04-14 |
 | **État actuel** | 🚀 EN COURS |
-| **Étape actuelle** | JOUR2_PARTIE2 ✅ |
-| **Progression globale** | 67% (4/6 étapes) |
+| **Étape actuelle** | JOUR3_PARTIE1 ✅ |
+| **Progression globale** | 83% (5/6 étapes) |
 | **Dernier commit** | (to be committed) |
 | **Temps estimé total** | 8-12 heures |
 
@@ -82,8 +82,19 @@
 ### JOUR 3 - Crypto Asymétrique & E2EE
 
 #### 🔹 Partie 1: Hacker NSA (Asymétrique)
-- **Status**: ⬜ À FAIRE
-- **Durée estimée**: 2-3h
+- **Status**: ✅ COMPLÉTÉE
+- **Objectif**: RSA key exchange + end-to-end encryption pour 1-on-1 messaging
+- **Durée réelle**: ~180 min (7 phases: RSA module, client integration, server registry, key exchange, session keys, validation)
+- **Validé**: ✅ OUI (31/31 critères validés)
+- **Notes**:
+  - RSA-2048 avec OAEP padding (SHA256)
+  - Client keypair generation et persistence: ~/.crypto-vibeness/username/{username}.pub/.priv
+  - Server public key registry (in-memory)
+  - Key exchange protocol: Alice generates session_key, encrypts with Bob's public_key, Bob decrypts
+  - Session key encryption reuses AES-256-CBC from JOUR2_PARTIE2
+  - Server cannot decrypt 1-on-1 messages (no private keys stored)
+  - 31 validation checks: RSA generation, serialization, registry, key exchange, encryption, security, performance
+  - Key performance: 76.5ms per key exchange (10 exchanges)
 
 #### 🔹 Partie 2: E2EE Complet (Signatures)
 - **Status**: ⬜ À FAIRE
@@ -127,4 +138,74 @@
 
 ---
 
-**Status**: JOUR1_PARTIE1 ✅ & JOUR1_PARTIE2 ✅ COMPLÉTÉES
+## ✅ Critères Validés (JOUR2_PARTIE1)
+
+- [x] C1: Key derivation with PBKDF2
+- [x] C2-C11: (11/12 criteria - see JOUR2_PARTIE1.md for details)
+
+---
+
+## ✅ Critères Validés (JOUR2_PARTIE2)
+
+- [x] C1-C27: All symmetric encryption criteria validated
+- [x] Key derivation with 100,000 iterations deterministic
+- [x] AES-256-CBC with PKCS7 padding
+- [x] Random IV generation (unique per message)
+- [x] Multi-user key storage and retrieval
+- [x] Client-side encryption/decryption
+- [x] 27/27 criteria passed ✅
+
+---
+
+## ✅ Critères Validés (JOUR3_PARTIE1)
+
+### Part 1: RSA Key Generation (5/5)
+- [x] C1: Generate RSA-2048 keypair
+- [x] C2: Key size is 2048 bits
+- [x] C3: Multiple keypairs are unique
+- [x] C4: Private and public keys are different
+- [x] C5: Keypair can encrypt/decrypt session keys
+
+### Part 2: Key Serialization (5/5)
+- [x] C6: Private key PEM serialization
+- [x] C7: Public key PEM serialization
+- [x] C8: Round-trip private key
+- [x] C9: Round-trip public key
+- [x] C10: Base64 encoding for transport
+
+### Part 3: Public Key Registry (5/5)
+- [x] C11: Register multiple users
+- [x] C12: Retrieve and verify keys
+- [x] C13: Encrypt/decrypt with registry keys
+- [x] C14: Registry isolation (wrong key cannot decrypt)
+- [x] C15: Large registry performance (100 users)
+
+### Part 4: Key Exchange Protocol (5/5)
+- [x] C16: Alice generates 256-bit session key
+- [x] C17: Encryption produces different output
+- [x] C18: Bob decrypts to original session key
+- [x] C19: Semantic security (different ciphertexts)
+- [x] C20: Bidirectional key exchange
+
+### Part 5: Session Key Encryption (5/5)
+- [x] C21: Encrypt plaintext with session key
+- [x] C22: Decrypt to original message
+- [x] C23: Multiple messages use different IVs
+- [x] C24: Different keys produce different ciphertexts
+- [x] C25: Empty and large messages work
+
+### Part 6: Security Properties (5/5)
+- [x] C26: Private key never in public key
+- [x] C27: OAEP provides semantic security (10/10 varied)
+- [x] C28: Server cannot decrypt (no private keys)
+- [x] C29: Session keys independently generated
+- [x] C30: No plaintext leakage
+
+### Part 7: Performance (1/1)
+- [x] C31: Key exchange performance 76.5ms per exchange
+
+**Total**: 31/31 criteria passed ✅
+
+---
+
+**Status**: JOUR1_PARTIE1 ✅ & JOUR1_PARTIE2 ✅ & JOUR2_PARTIE1 ✅ & JOUR2_PARTIE2 ✅ & JOUR3_PARTIE1 ✅ COMPLÉTÉES

@@ -17,6 +17,7 @@ sys.path.insert(0, current_dir)
 from utils.logger import CryptoLogger
 from utils.password_manager import PasswordManager
 from utils.entropy_calculator import EntropyCalculator
+from utils.asymmetric_crypto import RSACrypto
 
 
 class Room:
@@ -112,7 +113,7 @@ class RoomManager:
 class ClientHandler(threading.Thread):
     """Handle individual client connections"""
 
-    def __init__(self, client_socket, client_address, room_manager, all_users, logger, colors_config):
+    def __init__(self, client_socket, client_address, room_manager, all_users, logger, colors_config, public_key_registry=None, registry_lock=None):
         super().__init__()
         self.client_socket = client_socket
         self.client_address = client_address
@@ -123,6 +124,10 @@ class ClientHandler(threading.Thread):
         self.username = None
         self.current_room = "general"
         self.daemon = True
+        
+        # Public key registry (JOUR3_PARTIE1)
+        self.public_key_registry = public_key_registry or {}
+        self.registry_lock = registry_lock or threading.Lock()
 
     def send_message(self, msg_dict):
         """Send JSON message to client"""
@@ -427,6 +432,42 @@ class ClientHandler(threading.Thread):
             })
             self.logger.log("AUTH_REGISTER", username, "New account created")
             return True
+    
+    def register_public_key(self, username, public_key_pem_b64):
+        """
+        Register user's public key in the server registry (JOUR3_PARTIE1).
+        
+        Args:
+            username (str): Username
+            public_key_pem_b64 (str): Base64-encoded PEM public key
+        
+        Returns:
+            bool: True if registration succeeded
+        """
+        try:
+            with self.registry_lock:
+                self.public_key_registry[username] = public_key_pem_b64
+                self.logger.log("RSA_REGISTER", username, f"Public key registered")
+                return True
+        except Exception as e:
+            self.logger.error(f"Failed to register public key for {username}: {e}")
+            return False
+    
+    def send_public_key_registry(self):
+        """
+        Send the public key registry to the client (JOUR3_PARTIE1).
+        
+        Used so clients can retrieve public keys for key exchange.
+        """
+        try:
+            with self.registry_lock:
+                # Send registry (dict of {username: public_key_pem_b64})
+                self.send_message({
+                    "type": "public_key_registry",
+                    "registry": dict(self.public_key_registry)
+                })
+        except Exception as e:
+            self.logger.error(f"Failed to send public key registry: {e}")
 
     def run(self):
         """Main client handler loop"""
@@ -491,6 +532,14 @@ class ClientHandler(threading.Thread):
             if msg_type == "command":
                 if not self.handle_command(msg):
                     break
+            elif msg_type == "public_key":
+                # Register public key with server (JOUR3_PARTIE1)
+                public_key_b64 = msg.get("public_key_b64")
+                if public_key_b64:
+                    self.register_public_key(self.username, public_key_b64)
+            elif msg_type == "registry_request":
+                # Send current public key registry to client (JOUR3_PARTIE1)
+                self.send_public_key_registry()
             elif msg_type == "message":
                 # Broadcast message to room
                 timestamp = datetime.now().strftime("%H:%M:%S")
@@ -507,6 +556,23 @@ class ClientHandler(threading.Thread):
 
                 self.logger.log("MESSAGE", self.username, f"{self.current_room}: {msg.get('content', '')}")
                 self.broadcast_to_room(broadcast_msg)
+            
+            elif msg_type == "session_key_offer":
+                # Forward session key offer to recipient (JOUR3_PARTIE1)
+                to_user = msg.get("to", "")
+                if to_user and to_user in self.all_users:
+                    try:
+                        forward_msg = {
+                            "type": "session_key_offer",
+                            "from": self.username,
+                            "to": to_user,
+                            "encrypted_session_key_b64": msg.get("encrypted_session_key_b64")
+                        }
+                        target_socket = self.all_users[to_user]
+                        target_socket.sendall((json.dumps(forward_msg) + "\n").encode('utf-8'))
+                        self.logger.log("SESSION_KEY", self.username, f"Session key offer sent to {to_user}")
+                    except Exception as e:
+                        self.logger.error(f"Failed to forward session key offer: {e}")
 
         # Cleanup
         self.room_manager.leave_room(self.current_room, self.username)
@@ -543,6 +609,11 @@ class ChatServer:
         self.all_users = {}
         self.logger = CryptoLogger()
         self.running = False
+        
+        # Public key registry (JOUR3_PARTIE1)
+        # Format: {username: public_key_pem_b64}
+        self.public_key_registry = {}
+        self.registry_lock = threading.Lock()
 
     def start(self):
         """Start the server"""
@@ -567,7 +638,9 @@ class ChatServer:
                         self.room_manager,
                         self.all_users,
                         self.logger,
-                        self.config
+                        self.config,
+                        self.public_key_registry,
+                        self.registry_lock
                     )
                     handler.start()
                 except KeyboardInterrupt:
