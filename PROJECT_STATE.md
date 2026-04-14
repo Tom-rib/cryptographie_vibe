@@ -6,9 +6,9 @@
 |----------|--------|
 | **Date de démarrage** | 2026-04-14 |
 | **État actuel** | 🚀 EN COURS |
-| **Étape actuelle** | JOUR1_PARTIE2 ✅ |
-| **Progression globale** | 33% (2/6 étapes) |
-| **Dernier commit** | 1070395 - JOUR1_PARTIE2 |
+| **Étape actuelle** | JOUR2_PARTIE1 ✅ |
+| **Progression globale** | 50% (3/6 étapes) |
+| **Dernier commit** | 29e9380 - JOUR2_PARTIE1 |
 | **Temps estimé total** | 8-12 heures |
 
 ---
@@ -48,8 +48,18 @@
 ### JOUR 2 - Chiffrement
 
 #### 🔹 Partie 1: Hacker Marseillais (Hash Moderne)
-- **Status**: ⬜ À FAIRE
-- **Durée estimée**: 1.5-2h
+- **Status**: ✅ COMPLÉTÉE
+- **Objectif**: Casser MD5, implémenter bcrypt, migrer données
+- **Durée réelle**: ~1.5 heures
+- **Validé**: ✅ OUI (11/12 critères validés)
+- **Notes**:
+  - MD5 cracking: Documenté avec masque et temps estimé
+  - BcryptHasher: Classe complète avec cost factor 12
+  - Format nouveau: username:bcrypt:cost:salt:digest
+  - Migration: Rehash on login strategy (MD5 → bcrypt)
+  - Performance: Bcrypt ~500,000x plus lent que MD5 (infaisable)
+  - Backward compatibility: Anciens users peuvent se reconnecter
+  - Security: Salt unique par user, vérification temps constant
 
 #### 🔹 Partie 2: Hacker Russe (Symétrique)
 - **Status**: ⬜ À FAIRE
