@@ -4,22 +4,38 @@ Complete guide for manually testing the Crypto Vibeness project. This document w
 
 ## Quick Start
 
-### Prerequisites
+### Step 1: Setup Everything (First Time Only)
 
-1. **Install dependencies**
-   ```bash
-   make install
-   ```
+One command to create venv and install all dependencies:
 
-2. **Verify installation**
-   ```bash
-   python3 -c "import bcrypt, cryptography, pycryptodome; print('✓ All dependencies installed')"
-   ```
+```bash
+make setup
+```
 
-3. **Run automated validation** (before manual testing)
-   ```bash
-   make test
-   ```
+This will:
+- ✓ Create virtual environment (venv/)
+- ✓ Install all dependencies (bcrypt, cryptography, etc.)
+- ✓ Ready to use immediately
+
+### Step 2: Activate Virtual Environment (Every Session)
+
+```bash
+source venv/bin/activate
+# Windows: venv\Scripts\activate
+```
+
+You'll see `(venv)` in your prompt:
+```
+(venv) $ _
+```
+
+### Step 3: Run Automated Validation (Verify Everything Works)
+
+```bash
+make test
+```
+
+Expected result: ✅ All 120 criteria passing
 
 ## Manual Test Setup
 
@@ -29,24 +45,35 @@ You'll need **3 terminals** for manual testing:
 
 **Terminal 1: Server**
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-python3 src/server.py
+# First time or new session
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Then start server
+make run
+# OR: python3 src/server.py
 ```
 
 **Terminal 2: Client 1 (Alice)**
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate
+# First time or new session
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Then start client
 python3 src/client.py
+# Follow prompts: Username: alice, Password: [create password]
 ```
 
 **Terminal 3: Client 2 (Bob)**
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate
+# First time or new session
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Then start client
 python3 src/client.py
+# Follow prompts: Username: bob, Password: [create password]
 ```
+
+**Note:** Each terminal is independent. Always activate venv in each terminal before running commands.
 
 ---
 

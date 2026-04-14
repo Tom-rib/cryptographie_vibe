@@ -4,29 +4,28 @@ Print this page and keep it handy while testing!
 
 ## Terminal Setup (Copy-Paste Ready)
 
+### First Time Setup (One Time Only)
+```bash
+make setup
+```
+This creates venv and installs everything. Takes ~2 minutes.
+
 ### Terminal 1 - Server
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate  # Windows: venv\Scripts\activate
-python3 src/server.py
+source venv/bin/activate
+make run
 ```
 
 ### Terminal 2 - Client (Alice)
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate
 python3 src/client.py
-# Username: alice
-# Password: (first time creates user, then creates password)
 ```
 
 ### Terminal 3 - Client (Bob)
 ```bash
-cd /path/to/cryptographie_vibe
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate
 python3 src/client.py
-# Username: bob
-# Password: (first time creates user)
 ```
 
 ---

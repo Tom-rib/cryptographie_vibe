@@ -1,12 +1,20 @@
-.PHONY: help install test run clean lint format docs
+.PHONY: help install setup test run clean lint format docs
+
+# Check if we're in virtual environment
+VENV_PYTHON := venv/bin/python3
+VENV_PIP := venv/bin/pip3
 
 help:
 	@echo "╔════════════════════════════════════════════════════════════════╗"
 	@echo "║           CRYPTO VIBENESS - Project Management                ║"
 	@echo "╚════════════════════════════════════════════════════════════════╝"
 	@echo ""
-	@echo "Available targets:"
-	@echo "  make install        Install dependencies"
+	@echo "QUICK START:"
+	@echo "  make setup          Setup everything (creates venv, installs deps)"
+	@echo "  make test           Run all tests"
+	@echo ""
+	@echo "AVAILABLE TARGETS:"
+	@echo "  make install        Install dependencies (in venv)"
 	@echo "  make run            Run the IRC server"
 	@echo "  make test           Run all tests"
 	@echo "  make test-jour1p1   Test JOUR1_PARTIE1 (Chat)"
@@ -23,9 +31,29 @@ help:
 	@echo "  make docs           Display documentation"
 	@echo ""
 
+setup:
+	@echo "🔧 Setting up project..."
+	@if [ ! -d "venv" ]; then \
+		echo "📦 Creating virtual environment..."; \
+		python3 -m venv venv; \
+		echo "✅ Virtual environment created"; \
+	fi
+	@echo "📦 Installing dependencies..."
+	@. venv/bin/activate && pip3 install -r requirements.txt
+	@echo "✅ Setup complete! Ready to use."
+	@echo ""
+	@echo "Next steps:"
+	@echo "  source venv/bin/activate"
+	@echo "  make test"
+
 install:
 	@echo "📦 Installing dependencies..."
-	pip3 install -r requirements.txt
+	@if [ -f "venv/bin/activate" ]; then \
+		. venv/bin/activate && pip3 install -r requirements.txt; \
+	else \
+		echo "❌ Virtual environment not found. Run: make setup"; \
+		exit 1; \
+	fi
 	@echo "✅ Dependencies installed"
 
 test:
