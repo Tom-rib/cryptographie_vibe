@@ -8,6 +8,7 @@ import threading
 import hashlib
 import os
 import sys
+import base64
 from datetime import datetime
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from utils.logger import CryptoLogger
 from utils.password_manager import PasswordManager
 from utils.entropy_calculator import EntropyCalculator
 from utils.asymmetric_crypto import RSACrypto
+from utils.signature import RSASignature
 
 
 class Room:
@@ -60,14 +62,36 @@ class RoomManager:
     def __init__(self):
         self.rooms = {"general": Room("general")}
         self.lock = threading.Lock()
+        
+        # Room encryption keys (JOUR3_PARTIE2)
+        # Format: {room_name: 32-byte encryption key}
+        self.room_keys = {}
+        self.room_keys_lock = threading.Lock()
+        
+        # Generate key for general room
+        self._generate_room_key("general")
 
     def create_room(self, name, password=None):
         """Create a new room"""
         with self.lock:
             if name not in self.rooms:
                 self.rooms[name] = Room(name, password)
+                # Generate encryption key for new room (JOUR3_PARTIE2)
+                self._generate_room_key(name)
                 return True
             return False
+    
+    def _generate_room_key(self, room_name):
+        """Generate and store encryption key for a room (JOUR3_PARTIE2)"""
+        with self.room_keys_lock:
+            if room_name not in self.room_keys:
+                # Generate 256-bit (32-byte) room key
+                self.room_keys[room_name] = os.urandom(32)
+    
+    def get_room_key(self, room_name):
+        """Get room encryption key (JOUR3_PARTIE2)"""
+        with self.room_keys_lock:
+            return self.room_keys.get(room_name)
 
     def get_room(self, name):
         """Get room by name"""
@@ -553,6 +577,35 @@ class ClientHandler(threading.Thread):
                     "timestamp": timestamp,
                     "color": color
                 }
+                
+                # Add encrypted content if present (JOUR2_PARTIE2)
+                if "encrypted_content" in msg:
+                    broadcast_msg["encrypted_content"] = msg.get("encrypted_content")
+                    broadcast_msg["iv"] = msg.get("iv")
+                
+                # Verify signature if present (JOUR3_PARTIE2)
+                signature_valid = False
+                if "signature" in msg and self.username in self.public_key_registry:
+                    try:
+                        signature = msg.get("signature")
+                        plaintext = msg.get("content", "")  # Use plaintext for signature verification
+                        
+                        # Get sender's public key from registry
+                        sender_pub_b64 = self.public_key_registry.get(self.username)
+                        if sender_pub_b64:
+                            sender_pub_pem = base64.b64decode(sender_pub_b64)
+                            sender_pub_key = RSACrypto.pem_to_public_key(sender_pub_pem)
+                            
+                            # Verify signature
+                            signature_valid = RSASignature.verify(sender_pub_key, plaintext, signature)
+                            broadcast_msg["signature_valid"] = signature_valid
+                            
+                            if signature_valid:
+                                self.logger.log("SIGNATURE", self.username, "Message signature verified ✓")
+                            else:
+                                self.logger.log("SIGNATURE", self.username, "Message signature INVALID ✗")
+                    except Exception as e:
+                        self.logger.error(f"Failed to verify signature: {e}")
 
                 self.logger.log("MESSAGE", self.username, f"{self.current_room}: {msg.get('content', '')}")
                 self.broadcast_to_room(broadcast_msg)

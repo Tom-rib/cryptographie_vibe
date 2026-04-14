@@ -19,6 +19,7 @@ try:
     from utils.crypto import AES256Cipher
     from utils.key_derivation import KeyDerivation
     from utils.asymmetric_crypto import RSACrypto
+    from utils.signature import RSASignature
     CRYPTO_AVAILABLE = True
 except ImportError as e:
     print(f"Warning: Crypto modules not available: {e}")
@@ -495,6 +496,14 @@ class ChatClient:
                     else:
                         # Fallback to plaintext
                         msg_dict["content"] = user_input
+                    
+                    # Sign the message with private key (JOUR3_PARTIE2)
+                    if CRYPTO_AVAILABLE and self.private_key:
+                        try:
+                            signature = RSASignature.sign(self.private_key, user_input)
+                            msg_dict["signature"] = signature
+                        except Exception as e:
+                            print(f"⚠️  Warning: Could not sign message: {e}")
                     
                     self.send_message(msg_dict)
 
