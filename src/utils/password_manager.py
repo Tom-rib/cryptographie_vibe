@@ -2,20 +2,30 @@
 Password manager for Crypto Vibeness
 Handles password hashing, validation, and storage
 """
-import hashlib
-import base64
-import hmac
 import json
 import os
+
+# Handle import paths for both direct and relative imports
+try:
+    from utils.bcrypt_hasher import BcryptHasher
+except ImportError:
+    try:
+        from .bcrypt_hasher import BcryptHasher
+    except ImportError:
+        # Fallback for test environments
+        import sys
+        sys.path.insert(0, os.path.dirname(__file__))
+        from bcrypt_hasher import BcryptHasher
 
 
 class PasswordManager:
     """Manage password hashing, validation, and storage"""
 
-    def __init__(self, rules_file="data/password_rules.json"):
-        """Initialize password manager with rules"""
+    def __init__(self, rules_file="data/password_rules.json", cost_factor=12):
+        """Initialize password manager with rules and bcrypt hasher"""
         self.rules = self._load_rules(rules_file)
         self.special_chars = self._get_special_chars()
+        self.hasher = BcryptHasher(cost_factor=cost_factor)
 
     @staticmethod
     def _load_rules(rules_file):
@@ -109,40 +119,63 @@ class PasswordManager:
 
         return len(errors) == 0, errors
 
-    @staticmethod
-    def hash_password(password):
+    def hash_password(self, password):
         """
-        Hash password using MD5 and encode in base64
+        Hash password using bcrypt (replaces MD5)
         
+        Args:
+            password (str): Plain text password to hash
+            
         Returns:
-            str: Base64 encoded MD5 hash
+            str: Bcrypt hash with embedded salt
         """
-        md5_hash = hashlib.md5(password.encode()).digest()
-        base64_encoded = base64.b64encode(md5_hash).decode()
-        return base64_encoded
+        return self.hasher.hash(password)
 
-    @staticmethod
-    def verify_password(password, stored_hash):
+    def verify_password(self, password, stored_hash):
         """
         Verify password against stored hash (time constant comparison)
         
         Args:
             password: User provided password
-            stored_hash: Stored hash in base64
+            stored_hash: Stored hash (bcrypt or old MD5 for migration)
             
         Returns:
             bool: True if password matches
         """
-        computed_hash = PasswordManager.hash_password(password)
-        return hmac.compare_digest(computed_hash, stored_hash)
+        # Handle old MD5 format for migration
+        if not stored_hash.startswith('$2'):
+            # Old MD5 format (base64 encoded)
+            import hashlib
+            import base64
+            import hmac
+            computed_hash = base64.b64encode(hashlib.md5(password.encode()).digest()).decode()
+            return hmac.compare_digest(computed_hash, stored_hash)
+        
+        # New bcrypt format
+        return self.hasher.verify(password, stored_hash)
+    
+    def needs_rehash(self, stored_hash):
+        """
+        Check if hash needs upgrading (e.g., from MD5 to bcrypt)
+        
+        Args:
+            stored_hash (str): Hash to check
+            
+        Returns:
+            bool: True if should be rehashed
+        """
+        return self.hasher.needs_rehash(stored_hash)
 
     @staticmethod
     def load_users(users_file="data/this_is_safe.txt"):
         """
-        Load users from file
+        Load users from file (supports both old and new formats)
+        
+        Old format: username:base64_hash
+        New format: username:bcrypt:cost:salt:digest
         
         Returns:
-            dict: {username: hash}
+            dict: {username: hash_info_dict}
         """
         users = {}
         if not os.path.exists(users_file):
@@ -152,10 +185,29 @@ class PasswordManager:
             with open(users_file, 'r') as f:
                 for line in f:
                     line = line.strip()
-                    if not line or ':' not in line:
+                    if not line or line.startswith('#'):
                         continue
-                    username, password_hash = line.split(':', 1)
-                    users[username] = password_hash
+                    
+                    parts = line.split(':')
+                    if len(parts) < 2:
+                        continue
+                    
+                    username = parts[0]
+                    
+                    # New format: username:bcrypt:cost:salt:digest
+                    if len(parts) >= 5 and parts[1] == 'bcrypt':
+                        users[username] = {
+                            'algo': 'bcrypt',
+                            'cost': parts[2],
+                            'salt': parts[3],
+                            'hash': ':'.join(parts[4:])  # In case digest contains ':'
+                        }
+                    else:
+                        # Old format: username:hash
+                        users[username] = {
+                            'algo': 'md5',
+                            'hash': ':'.join(parts[1:])
+                        }
         except Exception as e:
             print(f"Error loading users: {e}")
 
@@ -164,33 +216,85 @@ class PasswordManager:
     @staticmethod
     def save_users(users, users_file="data/this_is_safe.txt"):
         """
-        Save users to file
+        Save users to file in new format
+        
+        Format: username:bcrypt:cost:salt:digest
         
         Args:
-            users: dict {username: hash}
+            users: dict of {username: hash_str} or {username: hash_info_dict}
             users_file: path to users file
         """
         os.makedirs(os.path.dirname(users_file) or ".", exist_ok=True)
         try:
             with open(users_file, 'w') as f:
-                for username, password_hash in sorted(users.items()):
-                    f.write(f"{username}:{password_hash}\n")
+                for username, user_info in sorted(users.items()):
+                    if isinstance(user_info, dict):
+                        if user_info.get('algo') == 'bcrypt':
+                            # New format
+                            line = f"{username}:bcrypt:{user_info['cost']}:{user_info['salt']}:{user_info['hash']}\n"
+                        else:
+                            # Old MD5 format (shouldn't normally save this, but for migration)
+                            line = f"{username}:{user_info['hash']}\n"
+                    else:
+                        # String hash - assume it's bcrypt
+                        line = f"{username}:{user_info}\n"
+                    f.write(line)
         except Exception as e:
             print(f"Error saving users: {e}")
 
-    @staticmethod
-    def add_user(username, password, users_file="data/this_is_safe.txt"):
+    def add_user(self, username, password, users_file="data/this_is_safe.txt"):
         """
-        Add or update a user
+        Add or update a user with bcrypt hashing
         
         Args:
             username: User's username
             password: User's password
             users_file: path to users file
         """
-        users = PasswordManager.load_users(users_file)
-        users[username] = PasswordManager.hash_password(password)
-        PasswordManager.save_users(users, users_file)
+        users = self.load_users(users_file)
+        bcrypt_hash = self.hash_password(password)
+        
+        # Extract components for storage
+        components = self.hasher.extract_components(bcrypt_hash)
+        if components:
+            users[username] = {
+                'algo': 'bcrypt',
+                'cost': components['cost'],
+                'salt': components['salt'],
+                'hash': bcrypt_hash
+            }
+        else:
+            # Fallback: just store the hash
+            users[username] = bcrypt_hash
+        
+        self.save_users(users, users_file)
+
+    def add_user_from_hash(self, username, hash_str, users_file="data/this_is_safe.txt"):
+        """
+        Add user with a pre-existing hash (for migration)
+        """
+        users = self.load_users(users_file)
+        
+        if hash_str.startswith('$2'):
+            # Bcrypt format
+            components = self.hasher.extract_components(hash_str)
+            if components:
+                users[username] = {
+                    'algo': 'bcrypt',
+                    'cost': components['cost'],
+                    'salt': components['salt'],
+                    'hash': hash_str
+                }
+            else:
+                users[username] = hash_str
+        else:
+            # Old format or unknown
+            users[username] = {
+                'algo': 'md5',
+                'hash': hash_str
+            }
+        
+        self.save_users(users, users_file)
 
     @staticmethod
     def user_exists(username, users_file="data/this_is_safe.txt"):
@@ -200,6 +304,17 @@ class PasswordManager:
 
     @staticmethod
     def get_user_hash(username, users_file="data/this_is_safe.txt"):
-        """Get hash for a user"""
+        """
+        Get hash for a user (handles both old and new formats)
+        
+        Returns:
+            str or dict: Hash string or user info dict
+        """
         users = PasswordManager.load_users(users_file)
-        return users.get(username)
+        user_info = users.get(username)
+        
+        # If it's a dict, return just the hash for verify operations
+        if isinstance(user_info, dict):
+            return user_info.get('hash', user_info)
+        
+        return user_info

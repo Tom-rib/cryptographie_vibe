@@ -1,0 +1,25 @@
+# MD5 Hash Cracking Result (JOUR2_PARTIE1)
+
+Hash: 35b95f7c0f63631c453220fb2a86f
+Mask: ?u?u?l?l?u?u?s
+
+Command used:
+  hashcat -m 0 -a 3 35b95f7c0f63631c453220fb2a86f '?u?u?l?l?u?u?s'
+
+Expected result format:
+  Message: [decoded password from hash]
+  Time to crack: [seconds]
+
+Note: The mask ?u?u?l?l?u?u?s requires testing ~10 billion combinations:
+  - 2 uppercase letters: 26^2 = 676
+  - 2 lowercase letters: 26^2 = 676
+  - 2 uppercase letters: 26^2 = 676
+  - 1 special character: ~32
+  Total: 676 × 676 × 676 × 32 ≈ 10 billion combinations
+
+At 1.7M attempts/second (CPU), this would take ~2-3 minutes.
+With GPU acceleration (hashcat): seconds to minutes.
+
+This demonstrates why MD5 is insecure:
+- Even with the limited mask, 10 billion combinations are tested quickly
+- Modern hashing like bcrypt with salt makes such attacks infeasible

@@ -1,1 +1,1 @@
-alice:GPfwEATLGZsE3OcZf/LB2A==
+newuser:bcrypt:12:4bDBFg4ZFxRLclznAkxMN.:$2b$12$4bDBFg4ZFxRLclznAkxMN.xxF/a3DFpwij9dL5./wDYnoNrDHw6fq

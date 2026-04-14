@@ -298,7 +298,7 @@ class ClientHandler(threading.Thread):
             return self._create_new_account(username, password_manager)
 
     def _login_existing_user(self, username, password_manager):
-        """Handle login for existing user"""
+        """Handle login for existing user with auto-rehash on login"""
         self.send_message({
             "type": "auth",
             "action": "login",
@@ -319,6 +319,17 @@ class ClientHandler(threading.Thread):
                     "type": "auth_success",
                     "content": f"Authentication successful! Welcome back {username}!"
                 })
+                
+                # Check if password needs rehashing (e.g., from MD5 to bcrypt)
+                if password_manager.needs_rehash(stored_hash):
+                    self.logger.log("AUTH_REHASH", username, "Upgrading password to bcrypt")
+                    # Rehash and save
+                    password_manager.add_user(username, password)
+                    self.send_message({
+                        "type": "auth_info",
+                        "content": "[Server: Password upgraded to bcrypt]"
+                    })
+                
                 self.logger.log("AUTH_SUCCESS", username, "Login successful")
                 return True
             else:
