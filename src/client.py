@@ -1,6 +1,6 @@
 """
 Crypto Vibeness Client - IRC-like chat system
-Day 1 Part 1: YOLO mode (no authentication, no encryption)
+Day 2 Part 2: Symmetric encryption (AES-256-CBC)
 """
 import socket
 import json
@@ -8,6 +8,20 @@ import threading
 import sys
 import os
 import time
+import base64
+
+# Add src to path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+
+# Try to import crypto modules
+try:
+    from utils.crypto import AES256Cipher
+    from utils.key_derivation import KeyDerivation
+    CRYPTO_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: Crypto modules not available: {e}")
+    CRYPTO_AVAILABLE = False
 
 
 class ChatClient:
@@ -22,6 +36,72 @@ class ChatClient:
         self.username_requested = False
         self.authenticated = False
         self.awaiting_password_input = False
+        
+        # Encryption key management
+        self.encryption_key = None
+        self.cipher = None
+        self.local_key_dir = None
+
+    def _setup_encryption_from_password(self, password, salt_b64=None):
+        """
+        Derive encryption key from password and setup cipher.
+        
+        Args:
+            password (str): User's password
+            salt_b64 (str): Optional base64-encoded salt (for re-derivation on login)
+        """
+        if not CRYPTO_AVAILABLE:
+            return
+        
+        try:
+            if salt_b64:
+                # Login scenario: use provided salt to re-derive same key
+                key = KeyDerivation.derive_with_salt(password, salt_b64)
+            else:
+                # Signup scenario: derive new key and salt
+                key, salt = KeyDerivation.derive(password)
+                salt_b64 = base64.b64encode(salt).decode('ascii')
+                
+                # Save key locally for future use
+                self._save_key_locally(key, salt_b64)
+            
+            # Create cipher for this session
+            self.encryption_key = key
+            self.cipher = AES256Cipher(key)
+            print(f"🔐 Encryption key derived from password")
+            
+        except Exception as e:
+            print(f"⚠️  Warning: Failed to setup encryption: {e}")
+    
+    def _save_key_locally(self, key, salt_b64):
+        """
+        Save encryption key to local storage (~/.crypto-vibeness/username/key.txt).
+        
+        Args:
+            key (bytes): 32-byte encryption key
+            salt_b64 (str): Base64-encoded salt for re-derivation
+        """
+        if not self.username:
+            return
+        
+        try:
+            # Create directory
+            key_dir = os.path.expanduser(f"~/.crypto-vibeness/{self.username}")
+            os.makedirs(key_dir, exist_ok=True)
+            self.local_key_dir = key_dir
+            
+            # Save key and salt
+            key_file = os.path.join(key_dir, "key.txt")
+            with open(key_file, 'w') as f:
+                # Format: key_b64:salt_b64
+                key_b64 = base64.b64encode(key).decode('ascii')
+                f.write(f"{key_b64}:{salt_b64}\n")
+            
+            os.chmod(key_file, 0o600)  # Make readable only by user
+            print(f"💾 Key saved to {key_file}")
+            
+        except Exception as e:
+            print(f"⚠️  Warning: Could not save key locally: {e}")
 
     def connect(self):
         """Connect to server"""
@@ -89,6 +169,14 @@ class ChatClient:
             self.authenticated = True
             print(f"\n✅ {msg.get('content')}\n")
             self.awaiting_password_input = False
+            
+            # Handle encryption key setup (for JOUR2_PARTIE2)
+            # Server may include salt_b64 for re-deriving key on login
+            if CRYPTO_AVAILABLE and "salt_b64" in msg:
+                # This is a login with existing user - re-derive key
+                if hasattr(self, '_last_password'):
+                    self._setup_encryption_from_password(self._last_password, msg.get("salt_b64"))
+                    delattr(self, '_last_password')
 
         elif msg_type == "auth_error":
             print(f"\n⚠️  {msg.get('content')}")
@@ -103,7 +191,16 @@ class ChatClient:
             reset = "\u001b[0m"
             timestamp = msg.get("timestamp", "")
             from_user = msg.get("from", "")
-            content = msg.get("content", "")
+            
+            # Try to decrypt if message is encrypted (JOUR2_PARTIE2)
+            if CRYPTO_AVAILABLE and self.cipher and "encrypted_content" in msg:
+                try:
+                    content = self.cipher.decrypt(msg.get("encrypted_content"), msg.get("iv"))
+                except Exception as e:
+                    content = f"[Decryption failed: {e}]"
+            else:
+                # Fallback to plaintext (for backward compatibility)
+                content = msg.get("content", "")
 
             print(f"{color}[{timestamp}] {from_user}{reset}: {content}")
 
@@ -152,6 +249,12 @@ class ChatClient:
                     if not user_input:
                         continue
                     
+                    # Store password for key derivation (JOUR2_PARTIE2)
+                    if CRYPTO_AVAILABLE:
+                        self._last_password = user_input
+                        # For new signup, derive key immediately
+                        self._setup_encryption_from_password(user_input)
+                    
                     self.send_message({"password": user_input})
                     self.awaiting_password_input = False
                     continue
@@ -180,11 +283,25 @@ class ChatClient:
                         "args": args
                     })
                 else:
-                    # Regular message
-                    self.send_message({
+                    # Regular message - encrypt if cipher is available
+                    msg_dict = {
                         "type": "message",
-                        "content": user_input
-                    })
+                    }
+                    
+                    if CRYPTO_AVAILABLE and self.cipher:
+                        # Encrypt the message (JOUR2_PARTIE2)
+                        try:
+                            encrypted = self.cipher.encrypt(user_input)
+                            msg_dict["encrypted_content"] = encrypted["ciphertext"]
+                            msg_dict["iv"] = encrypted["iv"]
+                        except Exception as e:
+                            print(f"✗ Encryption error: {e}")
+                            continue
+                    else:
+                        # Fallback to plaintext
+                        msg_dict["content"] = user_input
+                    
+                    self.send_message(msg_dict)
 
             except EOFError:
                 self.running = False

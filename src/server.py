@@ -315,10 +315,19 @@ class ClientHandler(threading.Thread):
             stored_hash = password_manager.get_user_hash(username)
 
             if password_manager.verify_password(password, stored_hash):
-                self.send_message({
+                # Get user's encryption key salt for client to re-derive key on login
+                salt_b64 = PasswordManager.get_user_salt_b64(username)
+                
+                auth_success_msg = {
                     "type": "auth_success",
                     "content": f"Authentication successful! Welcome back {username}!"
-                })
+                }
+                
+                # Include salt if available (allows client to re-derive encryption key)
+                if salt_b64:
+                    auth_success_msg["salt_b64"] = salt_b64
+                
+                self.send_message(auth_success_msg)
                 
                 # Check if password needs rehashing (e.g., from MD5 to bcrypt)
                 if password_manager.needs_rehash(stored_hash):
@@ -406,8 +415,12 @@ class ClientHandler(threading.Thread):
                 })
                 continue
 
-            # Save user
+            # Save user (hashed password for authentication)
             password_manager.add_user(username, password)
+            
+            # Derive and save encryption key for this user
+            PasswordManager.save_user_key(username, password)
+            
             self.send_message({
                 "type": "auth_success",
                 "content": f"Account created! Welcome {username}!"

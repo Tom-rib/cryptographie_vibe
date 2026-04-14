@@ -4,18 +4,22 @@ Handles password hashing, validation, and storage
 """
 import json
 import os
+import base64
 
 # Handle import paths for both direct and relative imports
 try:
     from utils.bcrypt_hasher import BcryptHasher
+    from utils.key_derivation import KeyDerivation
 except ImportError:
     try:
         from .bcrypt_hasher import BcryptHasher
+        from .key_derivation import KeyDerivation
     except ImportError:
         # Fallback for test environments
         import sys
         sys.path.insert(0, os.path.dirname(__file__))
         from bcrypt_hasher import BcryptHasher
+        from key_derivation import KeyDerivation
 
 
 class PasswordManager:
@@ -318,3 +322,142 @@ class PasswordManager:
             return user_info.get('hash', user_info)
         
         return user_info
+
+    # ===========================
+    # Key Derivation and Storage (for symmetric encryption)
+    # ===========================
+
+    @staticmethod
+    def derive_key(password):
+        """
+        Derive a 256-bit encryption key from a password using PBKDF2.
+        
+        Args:
+            password (str): User's password
+        
+        Returns:
+            tuple: (key_bytes, salt_bytes, salt_b64)
+        """
+        key, salt = KeyDerivation.derive(password)
+        salt_b64 = base64.b64encode(salt).decode('ascii')
+        return key, salt, salt_b64
+
+    @staticmethod
+    def save_user_key(username, password, keys_file="data/user_keys_do_not_steal_plz.txt"):
+        """
+        Derive a key from password and save it (username:algo:iterations:salt_b64:key_b64).
+        
+        Args:
+            username (str): Username
+            password (str): Password to derive from
+            keys_file (str): Path to key storage file
+        
+        Returns:
+            tuple: (key_bytes, salt_b64) for later use
+        """
+        key, salt, salt_b64 = PasswordManager.derive_key(password)
+        key_b64 = base64.b64encode(key).decode('ascii')
+        
+        # Load existing keys
+        keys = PasswordManager.load_user_keys(keys_file)
+        
+        # Save new key in format: username:pbkdf2:100000:salt_b64:key_b64
+        keys[username] = {
+            'algo': 'pbkdf2',
+            'iterations': KeyDerivation.ITERATIONS,
+            'salt_b64': salt_b64,
+            'key_b64': key_b64
+        }
+        
+        # Write to file
+        os.makedirs(os.path.dirname(keys_file) or '.', exist_ok=True)
+        with open(keys_file, 'w') as f:
+            for user, info in sorted(keys.items()):
+                line = f"{user}:pbkdf2:{info['iterations']}:{info['salt_b64']}:{info['key_b64']}\n"
+                f.write(line)
+        
+        return key, salt_b64
+
+    @staticmethod
+    def load_user_keys(keys_file="data/user_keys_do_not_steal_plz.txt"):
+        """
+        Load user keys from file.
+        
+        Format: username:algo:iterations:salt_b64:key_b64
+        
+        Returns:
+            dict: {username: {algo, iterations, salt_b64, key_b64}}
+        """
+        keys = {}
+        
+        if not os.path.exists(keys_file):
+            return keys
+        
+        try:
+            with open(keys_file, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith('#'):
+                        continue
+                    
+                    parts = line.split(':')
+                    if len(parts) >= 5:
+                        username = parts[0]
+                        algo = parts[1]
+                        iterations = int(parts[2])
+                        salt_b64 = parts[3]
+                        key_b64 = parts[4]
+                        
+                        keys[username] = {
+                            'algo': algo,
+                            'iterations': iterations,
+                            'salt_b64': salt_b64,
+                            'key_b64': key_b64
+                        }
+        except Exception as e:
+            print(f"Warning: Failed to load keys: {e}")
+        
+        return keys
+
+    @staticmethod
+    def get_user_key(username, keys_file="data/user_keys_do_not_steal_plz.txt"):
+        """
+        Get the encryption key for a user (in bytes, not base64).
+        
+        Args:
+            username (str): Username
+            keys_file (str): Path to key storage file
+        
+        Returns:
+            bytes: 32-byte encryption key, or None if not found
+        """
+        keys = PasswordManager.load_user_keys(keys_file)
+        user_key = keys.get(username)
+        
+        if user_key:
+            key_b64 = user_key.get('key_b64')
+            if key_b64:
+                return base64.b64decode(key_b64)
+        
+        return None
+
+    @staticmethod
+    def get_user_salt_b64(username, keys_file="data/user_keys_do_not_steal_plz.txt"):
+        """
+        Get the salt for a user (base64-encoded).
+        Used to re-derive the key during login.
+        
+        Args:
+            username (str): Username
+            keys_file (str): Path to key storage file
+        
+        Returns:
+            str: Base64-encoded salt, or None if not found
+        """
+        keys = PasswordManager.load_user_keys(keys_file)
+        user_key = keys.get(username)
+        
+        if user_key:
+            return user_key.get('salt_b64')
+        
+        return None
