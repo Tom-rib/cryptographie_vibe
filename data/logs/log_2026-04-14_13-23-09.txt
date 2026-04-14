@@ -1,0 +1,67 @@
+[13:23:09] [INFO] Server listening on localhost:5555
+[13:23:22] [INFO] New connection from ('127.0.0.1', 47468)
+[13:37:22] [INFO] New connection from ('127.0.0.1', 33338)
+[13:37:22] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 33338)
+[13:37:25] [INFO] [MESSAGE] alice: general: Hello from alice!
+[13:37:28] [INFO] [DISCONNECT] alice: Disconnected
+[13:37:29] [INFO] New connection from ('127.0.0.1', 50988)
+[13:37:29] [INFO] [CONNECT] bob: Connected from ('127.0.0.1', 50988)
+[13:37:30] [INFO] New connection from ('127.0.0.1', 51002)
+[13:37:30] [INFO] [CONNECT] charlie: Connected from ('127.0.0.1', 51002)
+[13:37:31] [INFO] [MESSAGE] bob: general: Hi everyone!
+[13:37:33] [INFO] [MESSAGE] bob: general: How is it going?
+[13:37:33] [INFO] [MESSAGE] charlie: general: Hello bob!
+[13:37:34] [INFO] [DISCONNECT] charlie: Disconnected
+[13:37:34] [INFO] [DISCONNECT] bob: Disconnected
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57932)
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57936)
+[13:38:16] [INFO] [CONNECT] test_user_1: Connected from ('127.0.0.1', 57936)
+[13:38:16] [INFO] [DISCONNECT] test_user_1: Disconnected
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57944)
+[13:38:16] [INFO] [CONNECT] unique_test: Connected from ('127.0.0.1', 57944)
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57950)
+[13:38:16] [INFO] [DISCONNECT] unique_test: Disconnected
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57956)
+[13:38:16] [INFO] [CONNECT] test_rooms: Connected from ('127.0.0.1', 57956)
+[13:38:16] [INFO] [DISCONNECT] test_rooms: Disconnected
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57966)
+[13:38:16] [INFO] [CONNECT] sender: Connected from ('127.0.0.1', 57966)
+[13:38:16] [INFO] New connection from ('127.0.0.1', 57982)
+[13:38:16] [INFO] [CONNECT] receiver: Connected from ('127.0.0.1', 57982)
+[13:38:17] [INFO] New connection from ('127.0.0.1', 57998)
+[13:38:17] [INFO] [CONNECT] cmd_test: Connected from ('127.0.0.1', 57998)
+[13:38:17] [INFO] [DISCONNECT] cmd_test: Disconnected
+[13:38:17] [INFO] New connection from ('127.0.0.1', 58000)
+[13:38:17] [INFO] [CONNECT] room_test: Connected from ('127.0.0.1', 58000)
+[13:38:17] [INFO] [CREATE_ROOM] room_test: test_room (protected=False)
+[13:38:17] [INFO] [DISCONNECT] room_test: Disconnected
+[13:38:17] [INFO] New connection from ('127.0.0.1', 58008)
+[13:38:17] [INFO] [CONNECT] users_test: Connected from ('127.0.0.1', 58008)
+[13:38:17] [INFO] [DISCONNECT] users_test: Disconnected
+[13:38:17] [ERROR] Failed to receive message: [Errno 104] Connection reset by peer
+[13:38:17] [INFO] [DISCONNECT] sender: Disconnected
+[13:38:17] [ERROR] Failed to receive message: [Errno 104] Connection reset by peer
+[13:38:17] [INFO] [DISCONNECT] receiver: Disconnected
+[13:38:37] [INFO] New connection from ('127.0.0.1', 55608)
+[13:38:37] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 55608)
+[13:38:37] [INFO] New connection from ('127.0.0.1', 55616)
+[13:38:37] [INFO] [CONNECT] bob: Connected from ('127.0.0.1', 55616)
+[13:38:38] [INFO] [MESSAGE] alice: general: Hello Bob!
+[13:38:38] [ERROR] Failed to receive message: [Errno 104] Connection reset by peer
+[13:38:38] [INFO] [DISCONNECT] bob: Disconnected
+[13:38:38] [INFO] [DISCONNECT] alice: Disconnected
+[13:38:47] [INFO] New connection from ('127.0.0.1', 56352)
+[13:38:47] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 56352)
+[13:38:47] [INFO] New connection from ('127.0.0.1', 56362)
+[13:38:47] [INFO] [CONNECT] bob: Connected from ('127.0.0.1', 56362)
+[13:38:48] [INFO] [MESSAGE] alice: general: Test message
+[13:38:48] [INFO] [DISCONNECT] alice: Disconnected
+[13:38:48] [ERROR] Failed to receive message: [Errno 104] Connection reset by peer
+[13:38:48] [INFO] [DISCONNECT] bob: Disconnected
+[13:39:00] [INFO] New connection from ('127.0.0.1', 48468)
+[13:39:01] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 48468)
+[13:39:01] [INFO] New connection from ('127.0.0.1', 48482)
+[13:39:02] [INFO] [CONNECT] bob: Connected from ('127.0.0.1', 48482)
+[13:39:02] [INFO] [MESSAGE] alice: general: Hello Bob!
+[13:39:03] [INFO] [DISCONNECT] bob: Disconnected
+[13:39:03] [INFO] [DISCONNECT] alice: Disconnected

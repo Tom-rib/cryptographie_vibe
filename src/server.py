@@ -1,0 +1,430 @@
+"""
+Crypto Vibeness Server - IRC-like chat system
+Day 1 Part 1: YOLO mode (no authentication, no encryption)
+"""
+import socket
+import json
+import threading
+import hashlib
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+
+# Add src to path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
+from utils.logger import CryptoLogger
+
+
+class Room:
+    """Represents a chat room"""
+
+    def __init__(self, name, password=None):
+        self.name = name
+        self.password = password
+        self.clients = {}  # {username: socket}
+        self.lock = threading.Lock()
+
+    def add_client(self, username, client_socket):
+        """Add client to room"""
+        with self.lock:
+            self.clients[username] = client_socket
+
+    def remove_client(self, username):
+        """Remove client from room"""
+        with self.lock:
+            if username in self.clients:
+                del self.clients[username]
+
+    def get_clients(self):
+        """Get all client sockets except the requester"""
+        with self.lock:
+            return dict(self.clients)
+
+    def is_protected(self):
+        """Check if room is password protected"""
+        return self.password is not None
+
+    def check_password(self, password):
+        """Verify room password"""
+        return self.password == password
+
+
+class RoomManager:
+    """Manages all chat rooms"""
+
+    def __init__(self):
+        self.rooms = {"general": Room("general")}
+        self.lock = threading.Lock()
+
+    def create_room(self, name, password=None):
+        """Create a new room"""
+        with self.lock:
+            if name not in self.rooms:
+                self.rooms[name] = Room(name, password)
+                return True
+            return False
+
+    def get_room(self, name):
+        """Get room by name"""
+        with self.lock:
+            return self.rooms.get(name)
+
+    def join_room(self, room_name, username, client_socket, password=None):
+        """Add client to room"""
+        with self.lock:
+            if room_name not in self.rooms:
+                return False, "Room does not exist"
+
+            room = self.rooms[room_name]
+            if room.is_protected() and room.password != password:
+                return False, "Wrong password"
+
+            room.add_client(username, client_socket)
+            return True, "Joined room"
+
+    def leave_room(self, room_name, username):
+        """Remove client from room"""
+        with self.lock:
+            if room_name in self.rooms:
+                self.rooms[room_name].remove_client(username)
+
+    def list_rooms(self):
+        """List all rooms"""
+        with self.lock:
+            return list(self.rooms.keys())
+
+    def get_room_info(self):
+        """Get info about all rooms"""
+        with self.lock:
+            info = {}
+            for name, room in self.rooms.items():
+                info[name] = {
+                    "protected": room.is_protected(),
+                    "clients": list(room.clients.keys())
+                }
+            return info
+
+
+class ClientHandler(threading.Thread):
+    """Handle individual client connections"""
+
+    def __init__(self, client_socket, client_address, room_manager, all_users, logger, colors_config):
+        super().__init__()
+        self.client_socket = client_socket
+        self.client_address = client_address
+        self.room_manager = room_manager
+        self.all_users = all_users
+        self.logger = logger
+        self.colors_config = colors_config
+        self.username = None
+        self.current_room = "general"
+        self.daemon = True
+
+    def send_message(self, msg_dict):
+        """Send JSON message to client"""
+        try:
+            msg = json.dumps(msg_dict) + "\n"
+            self.client_socket.sendall(msg.encode('utf-8'))
+        except Exception as e:
+            self.logger.error(f"Failed to send message: {e}")
+
+    def receive_message(self):
+        """Receive JSON message from client"""
+        try:
+            buffer = ""
+            while True:
+                data = self.client_socket.recv(4096)
+                if not data:
+                    return None
+                buffer += data.decode('utf-8')
+                if '\n' in buffer:
+                    line, buffer = buffer.split('\n', 1)
+                    return json.loads(line)
+        except Exception as e:
+            self.logger.error(f"Failed to receive message: {e}")
+            return None
+
+    def get_user_color(self, username):
+        """Get deterministic color for username"""
+        hash_val = int(hashlib.md5(username.encode()).hexdigest(), 16)
+        color_idx = hash_val % len(self.colors_config["colors"])
+        return self.colors_config["colors"][str(color_idx)]
+
+    def broadcast_to_room(self, message_dict, exclude_sender=False):
+        """Broadcast message to all clients in current room"""
+        room = self.room_manager.get_room(self.current_room)
+        if not room:
+            return
+
+        clients = room.get_clients()
+        for username, client_socket in clients.items():
+            if exclude_sender and username == self.username:
+                continue
+            try:
+                msg = json.dumps(message_dict) + "\n"
+                client_socket.sendall(msg.encode('utf-8'))
+            except Exception as e:
+                self.logger.error(f"Failed to broadcast to {username}: {e}")
+
+    def handle_command(self, command_data):
+        """Handle client commands"""
+        cmd = command_data.get("command", "")
+        args = command_data.get("args", [])
+
+        if cmd == "join":
+            self.handle_join(args)
+        elif cmd == "create":
+            self.handle_create(args)
+        elif cmd == "rooms":
+            self.handle_list_rooms()
+        elif cmd == "users":
+            self.handle_list_users()
+        elif cmd == "help":
+            self.handle_help()
+        elif cmd == "quit":
+            return False  # Signal to disconnect
+        else:
+            self.send_message({
+                "type": "error",
+                "content": f"Unknown command: {cmd}"
+            })
+
+        return True
+
+    def handle_join(self, args):
+        """Handle /join command"""
+        if not args:
+            self.send_message({"type": "error", "content": "Usage: /join <room_name> [password]"})
+            return
+
+        room_name = args[0]
+        password = args[1] if len(args) > 1 else None
+
+        # Leave current room
+        self.room_manager.leave_room(self.current_room, self.username)
+
+        # Try to join new room
+        success, message = self.room_manager.join_room(room_name, self.username, self.client_socket, password)
+
+        if success:
+            self.current_room = room_name
+            self.logger.log("JOIN_ROOM", self.username, room_name)
+            self.send_message({"type": "system", "content": f"Joined room: {room_name}"})
+            
+            # Notify others in room
+            self.broadcast_to_room({
+                "type": "system",
+                "content": f"{self.username} joined the room"
+            }, exclude_sender=True)
+        else:
+            # Rejoin previous room
+            self.room_manager.join_room(self.current_room, self.username, self.client_socket)
+            self.send_message({"type": "error", "content": message})
+
+    def handle_create(self, args):
+        """Handle /create command"""
+        if not args:
+            self.send_message({"type": "error", "content": "Usage: /create <room_name> [password]"})
+            return
+
+        room_name = args[0]
+        password = args[1] if len(args) > 1 else None
+
+        if self.room_manager.create_room(room_name, password):
+            self.logger.log("CREATE_ROOM", self.username, f"{room_name} (protected={password is not None})")
+            self.send_message({"type": "system", "content": f"Room created: {room_name}"})
+        else:
+            self.send_message({"type": "error", "content": f"Room {room_name} already exists"})
+
+    def handle_list_rooms(self):
+        """Handle /rooms command"""
+        info = self.room_manager.get_room_info()
+        rooms_list = []
+        for name, data in info.items():
+            protected = "[PROTECTED]" if data["protected"] else ""
+            current = " (*)" if name == self.current_room else ""
+            rooms_list.append(f"{name} {protected}{current}")
+
+        self.send_message({
+            "type": "rooms",
+            "content": rooms_list
+        })
+
+    def handle_list_users(self):
+        """Handle /users command"""
+        info = self.room_manager.get_room_info()
+        users = []
+        for name, data in info.items():
+            for username in data["clients"]:
+                if username not in users:
+                    users.append(username)
+
+        self.send_message({
+            "type": "users",
+            "content": users
+        })
+
+    def handle_help(self):
+        """Handle /help command"""
+        help_text = [
+            "/help - Show this help",
+            "/rooms - List all rooms",
+            "/join <room> [password] - Join a room",
+            "/create <room> [password] - Create a room",
+            "/users - List all connected users",
+            "/quit - Disconnect"
+        ]
+        self.send_message({"type": "help", "content": help_text})
+
+    def run(self):
+        """Main client handler loop"""
+        # Request username
+        self.send_message({"type": "username_request"})
+        username_data = self.receive_message()
+
+        if not username_data or "username" not in username_data:
+            self.client_socket.close()
+            return
+
+        username = username_data["username"].strip()
+
+        # Validate username
+        if len(username) < 3:
+            self.send_message({"type": "error", "content": "Username must be at least 3 characters"})
+            self.client_socket.close()
+            return
+
+        # Check if username already exists
+        if username in self.all_users:
+            self.send_message({"type": "error", "content": "Username already taken"})
+            self.client_socket.close()
+            return
+
+        self.username = username
+        self.all_users[username] = self.client_socket
+
+        # Join default room
+        self.room_manager.join_room("general", username, self.client_socket)
+        self.logger.log("CONNECT", username, f"Connected from {self.client_address}")
+
+        # Send welcome message
+        self.send_message({
+            "type": "welcome",
+            "content": f"Welcome to Crypto Vibeness, {username}!",
+            "color": self.get_user_color(username)
+        })
+
+        # Notify others
+        self.broadcast_to_room({
+            "type": "system",
+            "content": f"{username} has joined the chat"
+        }, exclude_sender=True)
+
+        # Main loop
+        while True:
+            msg = self.receive_message()
+            if msg is None:
+                break
+
+            msg_type = msg.get("type", "")
+
+            if msg_type == "command":
+                if not self.handle_command(msg):
+                    break
+            elif msg_type == "message":
+                # Broadcast message to room
+                timestamp = datetime.now().strftime("%H:%M:%S")
+                color = self.get_user_color(self.username)
+
+                broadcast_msg = {
+                    "type": "message",
+                    "from": self.username,
+                    "room": self.current_room,
+                    "content": msg.get("content", ""),
+                    "timestamp": timestamp,
+                    "color": color
+                }
+
+                self.logger.log("MESSAGE", self.username, f"{self.current_room}: {msg.get('content', '')}")
+                self.broadcast_to_room(broadcast_msg)
+
+        # Cleanup
+        self.room_manager.leave_room(self.current_room, self.username)
+        del self.all_users[self.username]
+        self.client_socket.close()
+        self.logger.log("DISCONNECT", self.username, "Disconnected")
+
+        # Notify others
+        room = self.room_manager.get_room(self.current_room)
+        if room:
+            clients = room.get_clients()
+            for client_socket in clients.values():
+                try:
+                    msg = json.dumps({
+                        "type": "system",
+                        "content": f"{self.username} has left the chat"
+                    }) + "\n"
+                    client_socket.sendall(msg.encode('utf-8'))
+                except:
+                    pass
+
+
+class ChatServer:
+    """Main chat server"""
+
+    def __init__(self, config_file="src/config/config.json"):
+        # Load config
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
+
+        self.port = self.config["server"]["default_port"]
+        self.host = self.config["server"]["host"]
+        self.room_manager = RoomManager()
+        self.all_users = {}
+        self.logger = CryptoLogger()
+        self.running = False
+
+    def start(self):
+        """Start the server"""
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        try:
+            server_socket.bind((self.host, self.port))
+            server_socket.listen(self.config["server"]["max_clients"])
+            self.logger.info(f"Server listening on {self.host}:{self.port}")
+            self.running = True
+
+            while self.running:
+                try:
+                    client_socket, client_address = server_socket.accept()
+                    self.logger.info(f"New connection from {client_address}")
+
+                    # Create handler thread
+                    handler = ClientHandler(
+                        client_socket,
+                        client_address,
+                        self.room_manager,
+                        self.all_users,
+                        self.logger,
+                        self.config
+                    )
+                    handler.start()
+                except KeyboardInterrupt:
+                    self.logger.info("Server shutting down...")
+                    break
+                except Exception as e:
+                    self.logger.error(f"Error accepting connection: {e}")
+
+        except Exception as e:
+            self.logger.error(f"Server error: {e}")
+        finally:
+            server_socket.close()
+            self.logger.info("Server stopped")
+
+
+if __name__ == "__main__":
+    server = ChatServer()
+    server.start()

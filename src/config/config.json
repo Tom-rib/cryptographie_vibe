@@ -1,0 +1,29 @@
+{
+  "server": {
+    "default_port": 5555,
+    "host": "localhost",
+    "max_clients": 100,
+    "timeout": 30
+  },
+  "logs": {
+    "directory": "./data/logs",
+    "format": "log_%Y-%m-%d_%H-%M-%S.txt",
+    "level": "INFO",
+    "max_size_mb": 50
+  },
+  "default_room": "general",
+  "colors": {
+    "0": "\u001b[91m",
+    "1": "\u001b[92m",
+    "2": "\u001b[93m",
+    "3": "\u001b[94m",
+    "4": "\u001b[95m",
+    "5": "\u001b[96m",
+    "6": "\u001b[97m",
+    "7": "\u001b[36m",
+    "8": "\u001b[35m",
+    "9": "\u001b[34m"
+  },
+  "reset_color": "\u001b[0m"
+}
+
