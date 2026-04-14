@@ -1,0 +1,9 @@
+# Code ownership patterns
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+*                               @copilot
+*.md                            @copilot
+/src/                           @copilot
+/tests/                         @copilot
+/.github/                       @copilot
+/pyproject.toml                 @copilot

@@ -1,0 +1,16 @@
+# Core dependencies
+pycryptodome==3.19.0
+bcrypt==4.1.2
+cryptography==41.0.7
+
+# Utilities
+python-dotenv==1.0.0
+
+# Development & Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pylint==3.0.3
+black==23.12.1
+
+# For type checking (optional)
+mypy==1.7.1

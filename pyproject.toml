@@ -1,0 +1,85 @@
+[build-system]
+requires = ["setuptools>=65.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-vibeness"
+version = "1.0.0"
+description = "Pedagogical cryptography project: IRC chat with E2EE, RSA signatures, and AES encryption"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Copilot", email = "copilot@github.com"},
+]
+keywords = ["cryptography", "aes", "rsa", "bcrypt", "e2ee", "irc"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Communications :: Chat",
+]
+
+dependencies = [
+    "pycryptodome>=3.19.0",
+    "bcrypt>=4.1.2",
+    "cryptography>=41.0.7",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "pylint>=3.0.3",
+    "black>=23.12.1",
+    "mypy>=1.7.1",
+]
+
+[tool.black]
+line-length = 120
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pylint.messages_control]
+disable = [
+    "missing-docstring",
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-locals",
+]
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "validate_*.py"
+addopts = "-v --tb=short"
