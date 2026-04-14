@@ -6,9 +6,9 @@
 |----------|--------|
 | **Date de démarrage** | 2026-04-14 |
 | **État actuel** | 🚀 EN COURS |
-| **Étape actuelle** | JOUR1_PARTIE1 ✅ |
-| **Progression globale** | 17% (1/6 étapes) |
-| **Dernier commit** | 04aea3a - JOUR1 PARTIE1 |
+| **Étape actuelle** | JOUR1_PARTIE2 ✅ |
+| **Progression globale** | 33% (2/6 étapes) |
+| **Dernier commit** | 1070395 - JOUR1_PARTIE2 |
 | **Temps estimé total** | 8-12 heures |
 
 ---
@@ -30,9 +30,18 @@
   - Commandes: /help, /rooms, /users, /join, /create, /quit
 
 #### 🔹 Partie 2: Authentification MD5
-- **Status**: ⏳ À FAIRE
+- **Status**: ✅ COMPLÉTÉE
 - **Objectif**: Ajouter authentification + MD5 + règles de mot de passe
-- **Durée estimée**: 1-1.5h
+- **Durée réelle**: ~50 min (utilities creation + integration testing)
+- **Validé**: ✅ OUI (14/14 critères validés)
+- **Notes**:
+  - EntropyCalculator: Formule log2(alphabet_size^length)
+  - PasswordManager: MD5+base64 hashing, time-constant comparison
+  - Validation rules: Length, uppercase, lowercase, digits, special chars
+  - Weak password rejection: <40 bits entropy → REJECTED
+  - Authentication flow: New account + existing user login
+  - User storage: data/this_is_safe.txt (sorted by username)
+  - Attempt limit: 3 tries for login
 
 ---
 
@@ -77,4 +86,23 @@
 
 ---
 
-**Status**: JOUR1_PARTIE1 ✅ COMPLÉTÉE
+## ✅ Critères Validés (JOUR1_PARTIE2)
+
+- [x] C1: Entropy calculation returns valid bits & percentage
+- [x] C2: Strength categories (WEAK/MEDIUM/STRONG/VERY STRONG)
+- [x] C3: Entropy formula log2(alphabet_size^length)
+- [x] C4: Helper functions detect char types
+- [x] C5: Password validation against rules
+- [x] C6: MD5+base64 hashing
+- [x] C7: Time-constant password verification (HMAC)
+- [x] C8: User file I/O (save & load)
+- [x] C9: Duplicate user prevention
+- [x] C10: Password rules JSON configuration
+- [x] C11: New user account creation
+- [x] C12: Existing user login with correct password
+- [x] C13: Weak password rejection (< 40 bits)
+- [x] C14: Wrong password rejection + 3-attempt limit
+
+---
+
+**Status**: JOUR1_PARTIE1 ✅ & JOUR1_PARTIE2 ✅ COMPLÉTÉES
