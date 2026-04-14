@@ -1,6 +1,6 @@
 """
 Crypto Vibeness Server - IRC-like chat system
-Day 1 Part 1: YOLO mode (no authentication, no encryption)
+Day 1 Part 2: Authentication with MD5
 """
 import socket
 import json
@@ -15,6 +15,8 @@ from pathlib import Path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 from utils.logger import CryptoLogger
+from utils.password_manager import PasswordManager
+from utils.entropy_calculator import EntropyCalculator
 
 
 class Room:
@@ -278,8 +280,135 @@ class ClientHandler(threading.Thread):
         ]
         self.send_message({"type": "help", "content": help_text})
 
+    def _authenticate_user(self, username, password_manager):
+        """
+        Authenticate user (create account or login)
+        
+        Returns:
+            bool: True if authentication successful
+        """
+        # Check if user exists
+        user_exists = password_manager.user_exists(username)
+
+        if user_exists:
+            # Existing user - ask for password
+            return self._login_existing_user(username, password_manager)
+        else:
+            # New user - create account
+            return self._create_new_account(username, password_manager)
+
+    def _login_existing_user(self, username, password_manager):
+        """Handle login for existing user"""
+        self.send_message({
+            "type": "auth",
+            "action": "login",
+            "content": "Username exists. Enter password:"
+        })
+
+        max_attempts = 3
+        for attempt in range(max_attempts):
+            password_data = self.receive_message()
+            if not password_data or "password" not in password_data:
+                return False
+
+            password = password_data["password"]
+            stored_hash = password_manager.get_user_hash(username)
+
+            if password_manager.verify_password(password, stored_hash):
+                self.send_message({
+                    "type": "auth_success",
+                    "content": f"Authentication successful! Welcome back {username}!"
+                })
+                self.logger.log("AUTH_SUCCESS", username, "Login successful")
+                return True
+            else:
+                remaining = max_attempts - attempt - 1
+                if remaining > 0:
+                    self.send_message({
+                        "type": "auth_error",
+                        "content": f"Wrong password (attempt {attempt + 1}/{max_attempts}). Try again:"
+                    })
+                else:
+                    self.send_message({
+                        "type": "auth_error",
+                        "content": f"Wrong password (attempt {max_attempts}/{max_attempts}). Connection closed."
+                    })
+                    self.logger.log("AUTH_FAILED", username, f"Too many wrong attempts")
+                    return False
+
+        return False
+
+    def _create_new_account(self, username, password_manager):
+        """Handle account creation for new user"""
+        self.send_message({
+            "type": "auth",
+            "action": "register",
+            "content": "New account. Choose password (min 8 chars, with Upper, lower, digit, special):"
+        })
+
+        while True:
+            # Get password
+            password_data = self.receive_message()
+            if not password_data or "password" not in password_data:
+                return False
+
+            password = password_data["password"]
+
+            # Validate password
+            is_valid, errors = password_manager.validate_password(password)
+
+            if not is_valid:
+                error_msg = "\n".join([f"  - {e}" for e in errors])
+                entropy, strength, percentage = EntropyCalculator.calculate(password)
+                self.send_message({
+                    "type": "auth_error",
+                    "content": f"Password validation failed:\n{error_msg}\nStrength: {percentage}% ({strength})\n\nTry again:"
+                })
+                continue
+
+            # Show strength and check if it's acceptable
+            entropy, strength, percentage = EntropyCalculator.calculate(password)
+            
+            if strength == "WEAK":
+                self.send_message({
+                    "type": "auth_error",
+                    "content": f"Password too weak: {percentage}% (WEAK). Must be at least MEDIUM strength (40+ bits). Try again:"
+                })
+                continue
+            
+            self.send_message({
+                "type": "auth_info",
+                "content": f"Password strength: {percentage}% ({strength}). Re-enter to confirm:"
+            })
+
+            # Confirm password
+            confirm_data = self.receive_message()
+            if not confirm_data or "password" not in confirm_data:
+                return False
+
+            confirm_password = confirm_data["password"]
+
+            if password != confirm_password:
+                self.send_message({
+                    "type": "auth_error",
+                    "content": "Passwords don't match. Try again:"
+                })
+                continue
+
+            # Save user
+            password_manager.add_user(username, password)
+            self.send_message({
+                "type": "auth_success",
+                "content": f"Account created! Welcome {username}!"
+            })
+            self.logger.log("AUTH_REGISTER", username, "New account created")
+            return True
+
     def run(self):
         """Main client handler loop"""
+        # Initialize password manager
+        password_manager = PasswordManager()
+        
         # Request username
         self.send_message({"type": "username_request"})
         username_data = self.receive_message()
@@ -290,15 +419,20 @@ class ClientHandler(threading.Thread):
 
         username = username_data["username"].strip()
 
-        # Validate username
+        # Validate username format
         if len(username) < 3:
             self.send_message({"type": "error", "content": "Username must be at least 3 characters"})
             self.client_socket.close()
             return
 
-        # Check if username already exists
+        # Check if username already connected simultaneously
         if username in self.all_users:
             self.send_message({"type": "error", "content": "Username already taken"})
+            self.client_socket.close()
+            return
+
+        # Authenticate user
+        if not self._authenticate_user(username, password_manager):
             self.client_socket.close()
             return
 
@@ -307,7 +441,7 @@ class ClientHandler(threading.Thread):
 
         # Join default room
         self.room_manager.join_room("general", username, self.client_socket)
-        self.logger.log("CONNECT", username, f"Connected from {self.client_address}")
+        self.logger.log("CONNECT", username, f"Authenticated connection from {self.client_address}")
 
         # Send welcome message
         self.send_message({

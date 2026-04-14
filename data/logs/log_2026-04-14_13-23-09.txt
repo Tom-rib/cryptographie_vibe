@@ -65,3 +65,21 @@
 [13:39:02] [INFO] [MESSAGE] alice: general: Hello Bob!
 [13:39:03] [INFO] [DISCONNECT] bob: Disconnected
 [13:39:03] [INFO] [DISCONNECT] alice: Disconnected
+[13:47:03] [INFO] New connection from ('127.0.0.1', 43256)
+[13:47:03] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 43256)
+[13:47:04] [INFO] [DISCONNECT] alice: Disconnected
+[13:47:05] [INFO] New connection from ('127.0.0.1', 43266)
+[13:47:05] [INFO] [CONNECT] bob: Connected from ('127.0.0.1', 43266)
+[13:47:06] [INFO] [DISCONNECT] bob: Disconnected
+[13:47:07] [INFO] New connection from ('127.0.0.1', 43272)
+[13:47:07] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 43272)
+[13:47:08] [INFO] [DISCONNECT] alice: Disconnected
+[13:47:19] [INFO] New connection from ('127.0.0.1', 59704)
+[13:47:19] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 59704)
+[13:47:21] [INFO] [DISCONNECT] alice: Disconnected
+[13:47:30] [INFO] New connection from ('127.0.0.1', 54126)
+[13:47:30] [INFO] [CONNECT] testuser: Connected from ('127.0.0.1', 54126)
+[13:47:31] [INFO] [DISCONNECT] testuser: Disconnected
+[13:48:28] [INFO] New connection from ('127.0.0.1', 38388)
+[13:48:28] [INFO] [CONNECT] alice: Connected from ('127.0.0.1', 38388)
+[13:48:29] [INFO] [DISCONNECT] alice: Disconnected

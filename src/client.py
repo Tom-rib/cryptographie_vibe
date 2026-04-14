@@ -20,6 +20,8 @@ class ChatClient:
         self.username = None
         self.running = False
         self.username_requested = False
+        self.authenticated = False
+        self.awaiting_password_input = False
 
     def connect(self):
         """Connect to server"""
@@ -73,7 +75,28 @@ class ChatClient:
             self.username_requested = True
 
         elif msg_type == "welcome":
+            self.authenticated = True
             print(f"\n{msg.get('content')}\n")
+
+        elif msg_type == "auth":
+            # Authentication prompt - need password or action
+            action = msg.get("action", "")
+            content = msg.get("content", "")
+            print(f"\n→ {content}")
+            self.awaiting_password_input = True
+
+        elif msg_type == "auth_success":
+            self.authenticated = True
+            print(f"\n✅ {msg.get('content')}\n")
+            self.awaiting_password_input = False
+
+        elif msg_type == "auth_error":
+            print(f"\n⚠️  {msg.get('content')}")
+            self.awaiting_password_input = True
+
+        elif msg_type == "auth_info":
+            print(f"\n→ {msg.get('content')}")
+            self.awaiting_password_input = True
 
         elif msg_type == "message":
             color = msg.get("color", "")
@@ -122,6 +145,20 @@ class ChatClient:
                 if self.username_requested and self.username is None:
                     self.request_username()
                     self.username_requested = False
+
+                # Wait for password during authentication
+                if self.awaiting_password_input:
+                    user_input = input()
+                    if not user_input:
+                        continue
+                    
+                    self.send_message({"password": user_input})
+                    self.awaiting_password_input = False
+                    continue
+
+                # Normal chat input (only after authentication)
+                if not self.authenticated:
+                    continue
 
                 user_input = input()
                 if not user_input:

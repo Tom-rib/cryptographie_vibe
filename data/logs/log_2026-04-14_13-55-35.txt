@@ -1,0 +1,13 @@
+[13:55:35] [INFO] Server listening on localhost:5555
+[13:55:43] [INFO] New connection from ('127.0.0.1', 49352)
+[13:55:48] [INFO] New connection from ('127.0.0.1', 49366)
+[13:55:49] [INFO] [AUTH_REGISTER] alice: New account created
+[13:55:49] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 49366)
+[13:55:49] [INFO] [DISCONNECT] alice: Disconnected
+[13:55:49] [INFO] New connection from ('127.0.0.1', 49380)
+[13:55:50] [INFO] [AUTH_SUCCESS] alice: Login successful
+[13:55:50] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 49380)
+[13:55:50] [INFO] [DISCONNECT] alice: Disconnected
+[13:55:50] [INFO] New connection from ('127.0.0.1', 49388)
+[13:55:52] [INFO] New connection from ('127.0.0.1', 49398)
+[13:55:53] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
