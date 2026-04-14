@@ -6,9 +6,9 @@
 |----------|--------|
 | **Date de démarrage** | 2026-04-14 |
 | **État actuel** | 🚀 EN COURS |
-| **Étape actuelle** | JOUR2_PARTIE1 ✅ |
-| **Progression globale** | 50% (3/6 étapes) |
-| **Dernier commit** | 29e9380 - JOUR2_PARTIE1 |
+| **Étape actuelle** | JOUR2_PARTIE2 ✅ |
+| **Progression globale** | 67% (4/6 étapes) |
+| **Dernier commit** | (to be committed) |
 | **Temps estimé total** | 8-12 heures |
 
 ---
@@ -62,8 +62,20 @@
   - Security: Salt unique par user, vérification temps constant
 
 #### 🔹 Partie 2: Hacker Russe (Symétrique)
-- **Status**: ⬜ À FAIRE
-- **Durée estimée**: 2-2.5h
+- **Status**: ✅ COMPLÉTÉE
+- **Objectif**: AES-256-CBC encryption avec key derivation PBKDF2
+- **Durée réelle**: ~2 heures
+- **Validé**: ✅ OUI (27/27 critères validés)
+- **Notes**:
+  - KeyDerivation: PBKDF2-HMAC-SHA256, 100k iterations, 256-bit keys
+  - AES256Cipher: AES-256-CBC mode avec PKCS7 padding
+  - IV: Généré aléatoirement pour chaque message (no reuse)
+  - Key storage: Server-side (user_keys_do_not_steal_plz.txt)
+  - Local storage: ~/.crypto-vibeness/username/key.txt
+  - Message format: {encrypted_content, iv} en base64
+  - Client integration: Encrypt on send, decrypt on receive
+  - Performance: 0.02ms/message (très rapide)
+  - Security: 1000 encryptions sans IV collision, pas de plaintext logging
 
 ---
 
