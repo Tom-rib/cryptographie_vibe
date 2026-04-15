@@ -244,6 +244,16 @@ class ClientHandler(threading.Thread):
             self.logger.log("JOIN_ROOM", self.username, room_name)
             self.send_message({"type": "system", "content": f"Joined room: {room_name}"})
             
+            # Send room encryption key to client (JOUR2_PARTIE2)
+            room_key = self.room_manager.get_room_key(room_name)
+            if room_key:
+                room_key_b64 = base64.b64encode(room_key).decode('ascii')
+                self.send_message({
+                    "type": "room_key",
+                    "room": room_name,
+                    "key_b64": room_key_b64
+                })
+            
             # Notify others in room
             self.broadcast_to_room({
                 "type": "system",

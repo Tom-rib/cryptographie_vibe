@@ -17,6 +17,18 @@ This will:
 - ✓ Install all dependencies (bcrypt, cryptography, etc.)
 - ✓ Ready to use immediately
 
+### Step 1 Alternative: Fast Start Server or Client
+
+For quick testing, use one of these commands that setup + starts automatically:
+
+```bash
+# In Terminal 1 - Start server (with automatic setup)
+make setup-serveur
+
+# In Terminal 2 - Start client (with automatic setup)
+make setup-client
+```
+
 ### Step 2: Activate Virtual Environment (Every Session)
 
 ```bash
@@ -39,7 +51,26 @@ Expected result: ✅ All 120 criteria passing
 
 ## Manual Test Setup
 
-### Terminal Setup
+### Option 1: Using make commands (Easiest)
+
+**Terminal 1: Server**
+```bash
+make setup-serveur
+```
+
+**Terminal 2: Client 1 (Alice)**
+```bash
+make setup-client
+# Follow prompts: Username: alice, Password: [create password]
+```
+
+**Terminal 3: Client 2 (Bob)**
+```bash
+make setup-client
+# Follow prompts: Username: bob, Password: [create password]
+```
+
+### Option 2: Manual setup with individual commands
 
 You'll need **3 terminals** for manual testing:
 
@@ -59,7 +90,8 @@ make run
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Then start client
-python3 src/client.py
+make client
+# OR: python3 src/client.py
 # Follow prompts: Username: alice, Password: [create password]
 ```
 

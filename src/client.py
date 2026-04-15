@@ -44,6 +44,11 @@ class ChatClient:
         self.cipher = None
         self.local_key_dir = None
         
+        # Room encryption keys (JOUR2_PARTIE2)
+        self.current_room = "general"
+        self.room_keys = {}  # {room_name: 32-byte encryption key}
+        self.room_ciphers = {}  # {room_name: AES256Cipher}
+        
         # RSA keypair management (JOUR3_PARTIE1)
         self.private_key = None
         self.public_key = None
@@ -344,11 +349,17 @@ class ChatClient:
             reset = "\u001b[0m"
             timestamp = msg.get("timestamp", "")
             from_user = msg.get("from", "")
+            room_name = msg.get("room", self.current_room)
             
             # Try to decrypt if message is encrypted (JOUR2_PARTIE2)
-            if CRYPTO_AVAILABLE and self.cipher and "encrypted_content" in msg:
+            if CRYPTO_AVAILABLE and "encrypted_content" in msg:
                 try:
-                    content = self.cipher.decrypt(msg.get("encrypted_content"), msg.get("iv"))
+                    # Try to use room cipher first (shared key), fall back to personal cipher
+                    active_cipher = self.room_ciphers.get(room_name) or self.cipher
+                    if active_cipher:
+                        content = active_cipher.decrypt(msg.get("encrypted_content"), msg.get("iv"))
+                    else:
+                        content = f"[Decryption failed: No cipher available for {room_name}]"
                 except Exception as e:
                     content = f"[Decryption failed: {e}]"
             else:
@@ -358,7 +369,14 @@ class ChatClient:
             print(f"{color}[{timestamp}] {from_user}{reset}: {content}")
 
         elif msg_type == "system":
-            print(f"\n→ {msg.get('content')}\n")
+            content = msg.get('content', '')
+            print(f"\n→ {content}\n")
+            
+            # Track room join (JOUR2_PARTIE2)
+            if "Joined room:" in content:
+                parts = content.split("Joined room:")
+                if len(parts) > 1:
+                    self.current_room = parts[1].strip()
 
         elif msg_type == "error":
             print(f"\n✗ Error: {msg.get('content')}\n")
@@ -420,6 +438,25 @@ class ChatClient:
                         
                 except Exception as e:
                     print(f"⚠️  Warning: Failed to decrypt session key from {peer_username}: {e}")
+        
+        elif msg_type == "room_key":
+            # Receive room encryption key (JOUR2_PARTIE2)
+            if not CRYPTO_AVAILABLE:
+                return
+            
+            room_name = msg.get("room", "")
+            key_b64 = msg.get("key_b64", "")
+            
+            if room_name and key_b64:
+                try:
+                    # Decode room key
+                    room_key = base64.b64decode(key_b64)
+                    self.room_keys[room_name] = room_key
+                    self.room_ciphers[room_name] = AES256Cipher(room_key)
+                    self.current_room = room_name
+                    print(f"🔐 Received room key for '{room_name}'")
+                except Exception as e:
+                    print(f"⚠️  Warning: Failed to setup room key for {room_name}: {e}")
 
     def request_username(self):
         """Request username from user"""
@@ -482,17 +519,25 @@ class ChatClient:
                     # Regular message - encrypt if cipher is available
                     msg_dict = {
                         "type": "message",
+                        "room": self.current_room,
                     }
                     
-                    if CRYPTO_AVAILABLE and self.cipher:
-                        # Encrypt the message (JOUR2_PARTIE2)
-                        try:
-                            encrypted = self.cipher.encrypt(user_input)
-                            msg_dict["encrypted_content"] = encrypted["ciphertext"]
-                            msg_dict["iv"] = encrypted["iv"]
-                        except Exception as e:
-                            print(f"✗ Encryption error: {e}")
-                            continue
+                    if CRYPTO_AVAILABLE:
+                        # Try to use room cipher if in a room with shared key
+                        active_cipher = self.room_ciphers.get(self.current_room) or self.cipher
+                        
+                        if active_cipher:
+                            # Encrypt the message (JOUR2_PARTIE2)
+                            try:
+                                encrypted = active_cipher.encrypt(user_input)
+                                msg_dict["encrypted_content"] = encrypted["ciphertext"]
+                                msg_dict["iv"] = encrypted["iv"]
+                            except Exception as e:
+                                print(f"✗ Encryption error: {e}")
+                                continue
+                        else:
+                            # Fallback to plaintext
+                            msg_dict["content"] = user_input
                     else:
                         # Fallback to plaintext
                         msg_dict["content"] = user_input

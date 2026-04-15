@@ -1,0 +1,68 @@
+[09:47:13] [INFO] Server listening on localhost:5555
+[09:47:33] [INFO] New connection from ('127.0.0.1', 36844)
+[09:48:38] [INFO] [AUTH_REGISTER] Tom: New account created
+[09:48:38] [INFO] [CONNECT] Tom: Authenticated connection from ('127.0.0.1', 36844)
+[09:48:38] [INFO] [RSA_REGISTER] Tom: Public key registered
+[09:48:48] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[09:48:48] [INFO] [MESSAGE] Tom: general: 
+[09:49:09] [INFO] New connection from ('127.0.0.1', 46724)
+[09:49:24] [INFO] [AUTH_REGISTER] Pat: New account created
+[09:49:24] [INFO] [CONNECT] Pat: Authenticated connection from ('127.0.0.1', 46724)
+[09:49:24] [INFO] [RSA_REGISTER] Pat: Public key registered
+[09:49:28] [INFO] [SIGNATURE] Pat: Message signature INVALID ✗
+[09:49:28] [INFO] [MESSAGE] Pat: general: 
+[09:49:29] [INFO] [SIGNATURE] Pat: Message signature INVALID ✗
+[09:49:29] [INFO] [MESSAGE] Pat: general: 
+[09:49:35] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[09:49:35] [INFO] [MESSAGE] Tom: general: 
+[09:49:44] [INFO] [SIGNATURE] Pat: Message signature INVALID ✗
+[09:49:44] [INFO] [MESSAGE] Pat: general: 
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40014)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40016)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40022)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40026)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40036)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40046)
+[09:50:48] [INFO] New connection from ('127.0.0.1', 40050)
+[09:50:49] [INFO] New connection from ('127.0.0.1', 40052)
+[09:50:49] [INFO] New connection from ('127.0.0.1', 40064)
+[09:50:49] [INFO] New connection from ('127.0.0.1', 40078)
+[09:56:29] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[09:56:29] [INFO] [MESSAGE] Tom: general: 
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46056)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46064)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46066)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46082)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46088)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46102)
+[10:00:36] [INFO] New connection from ('127.0.0.1', 46114)
+[10:00:37] [INFO] New connection from ('127.0.0.1', 46128)
+[10:00:37] [INFO] New connection from ('127.0.0.1', 46140)
+[10:00:37] [INFO] New connection from ('127.0.0.1', 46148)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43290)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43292)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43294)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43306)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43318)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43328)
+[10:01:41] [INFO] New connection from ('127.0.0.1', 43344)
+[10:01:42] [INFO] New connection from ('127.0.0.1', 43360)
+[10:01:42] [INFO] New connection from ('127.0.0.1', 43376)
+[10:01:42] [INFO] New connection from ('127.0.0.1', 43390)
+[10:01:43] [INFO] New connection from ('127.0.0.1', 43404)
+[10:01:44] [INFO] [AUTH_REGISTER] alice: New account created
+[10:01:44] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 43404)
+[10:01:44] [INFO] [DISCONNECT] alice: Disconnected
+[10:01:44] [INFO] New connection from ('127.0.0.1', 43414)
+[10:01:45] [INFO] [AUTH_SUCCESS] alice: Login successful
+[10:01:45] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 43414)
+[10:01:46] [INFO] [DISCONNECT] alice: Disconnected
+[10:01:46] [INFO] New connection from ('127.0.0.1', 56620)
+[10:01:47] [INFO] New connection from ('127.0.0.1', 56628)
+[10:01:49] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
+[10:02:08] [INFO] New connection from ('127.0.0.1', 54398)
+[10:02:09] [INFO] New connection from ('127.0.0.1', 54412)
+[10:02:21] [INFO] New connection from ('127.0.0.1', 40326)
+[10:02:22] [INFO] New connection from ('127.0.0.1', 40340)
+[10:02:42] [INFO] New connection from ('127.0.0.1', 43836)
+[10:02:52] [INFO] New connection from ('127.0.0.1', 54666)

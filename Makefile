@@ -1,4 +1,4 @@
-.PHONY: help install setup test run clean lint format docs
+.PHONY: help install setup setup-serveur setup-client test run client clean lint format docs
 
 # Check if we're in virtual environment
 VENV_PYTHON := venv/bin/python3
@@ -11,6 +11,8 @@ help:
 	@echo ""
 	@echo "QUICK START:"
 	@echo "  make setup          Setup everything (creates venv, installs deps)"
+	@echo "  make setup-serveur  Setup and start server (for testing)"
+	@echo "  make setup-client   Setup and start client (for testing)"
 	@echo "  make test           Run all tests"
 	@echo ""
 	@echo "AVAILABLE TARGETS:"
@@ -46,6 +48,16 @@ setup:
 	@echo "  source venv/bin/activate"
 	@echo "  make test"
 
+setup-serveur: setup
+	@echo ""
+	@echo "🚀 Starting IRC server..."
+	@. venv/bin/activate && python3 src/server.py
+
+setup-client: setup
+	@echo ""
+	@echo "💻 Starting IRC client..."
+	@. venv/bin/activate && python3 src/client.py
+
 install:
 	@echo "📦 Installing dependencies..."
 	@if [ -f "venv/bin/activate" ]; then \
@@ -58,37 +70,37 @@ install:
 
 test:
 	@echo "🧪 Running all validation tests..."
-	@python3 tests/validate_jour1_partie1.py
-	@python3 tests/validate_jour1_partie2.py
-	@python3 tests/validate_jour2_partie1.py
-	@python3 tests/validate_jour2_partie2.py
-	@python3 tests/validate_jour3_partie1.py
-	@python3 tests/validate_jour3_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour1_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour1_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour2_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour2_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour3_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour3_partie2.py
 	@echo "✅ All tests completed"
 
 test-jour1p1:
 	@echo "🧪 Testing JOUR1_PARTIE1 (Chat)..."
-	python3 tests/validate_jour1_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour1_partie1.py
 
 test-jour1p2:
 	@echo "🧪 Testing JOUR1_PARTIE2 (Auth MD5)..."
-	python3 tests/validate_jour1_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour1_partie2.py
 
 test-jour2p1:
 	@echo "🧪 Testing JOUR2_PARTIE1 (Bcrypt)..."
-	python3 tests/validate_jour2_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour2_partie1.py
 
 test-jour2p2:
 	@echo "🧪 Testing JOUR2_PARTIE2 (AES-256)..."
-	python3 tests/validate_jour2_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour2_partie2.py
 
 test-jour3p1:
 	@echo "🧪 Testing JOUR3_PARTIE1 (RSA Keys)..."
-	python3 tests/validate_jour3_partie1.py
+	@. venv/bin/activate && python3 tests/validate_jour3_partie1.py
 
 test-jour3p2:
 	@echo "🧪 Testing JOUR3_PARTIE2 (E2EE + Signatures)..."
-	python3 tests/validate_jour3_partie2.py
+	@. venv/bin/activate && python3 tests/validate_jour3_partie2.py
 
 run:
 	@echo "🚀 Starting IRC server..."
