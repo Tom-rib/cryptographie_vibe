@@ -1,1 +1,3 @@
-alice:bcrypt:12:uy55Lxnc1r8aJJQ7UAHMze:$2b$12$uy55Lxnc1r8aJJQ7UAHMze/7.elaOhiQOzUH9ywBuQ88OTXeEnzGC
+Alice123:bcrypt:12:vD2/eK.tKD3qYu57ydvAS.:$2b$12$vD2/eK.tKD3qYu57ydvAS.gXJcrpu2KPSvwGU5NWpAKkiw/93YmT.
+TestAlice:bcrypt:12:pO9g4Os5t2uODNkXlbeB.e:$2b$12$pO9g4Os5t2uODNkXlbeB.er61F44eEGCqV7aNGZTHQ5uR1CWLB2du
+alice:bcrypt:12:.oE1PHALi.aKfiTKhhNMCe:$2b$12$.oE1PHALi.aKfiTKhhNMCeUfQRgRIhrTY8KrZbxshZ50A1ZcYmfOK

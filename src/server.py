@@ -548,6 +548,16 @@ class ClientHandler(threading.Thread):
             "content": f"Welcome to Crypto Vibeness, {username}!",
             "color": self.get_user_color(username)
         })
+        
+        # Send room encryption key to client (JOUR2_PARTIE2)
+        room_key = self.room_manager.get_room_key("general")
+        if room_key:
+            room_key_b64 = base64.b64encode(room_key).decode('ascii')
+            self.send_message({
+                "type": "room_key",
+                "room": "general",
+                "key_b64": room_key_b64
+            })
 
         # Notify others
         self.broadcast_to_room({

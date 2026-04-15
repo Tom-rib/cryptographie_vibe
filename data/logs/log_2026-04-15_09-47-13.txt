@@ -66,3 +66,7 @@
 [10:02:22] [INFO] New connection from ('127.0.0.1', 40340)
 [10:02:42] [INFO] New connection from ('127.0.0.1', 43836)
 [10:02:52] [INFO] New connection from ('127.0.0.1', 54666)
+[10:04:17] [INFO] New connection from ('127.0.0.1', 49508)
+[10:04:22] [INFO] New connection from ('127.0.0.1', 49520)
+[10:05:37] [INFO] Server shutting down...
+[10:05:37] [INFO] Server stopped

@@ -1,0 +1,78 @@
+[10:05:46] [INFO] Server listening on localhost:5555
+[10:05:51] [INFO] New connection from ('127.0.0.1', 34436)
+[10:06:10] [INFO] New connection from ('127.0.0.1', 49014)
+[10:06:17] [INFO] [AUTH_REGISTER] Tom: New account created
+[10:06:17] [INFO] [CONNECT] Tom: Authenticated connection from ('127.0.0.1', 49014)
+[10:06:17] [INFO] [RSA_REGISTER] Tom: Public key registered
+[10:06:21] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[10:06:21] [INFO] [MESSAGE] Tom: general: 
+[10:06:32] [INFO] New connection from ('127.0.0.1', 46318)
+[10:06:39] [INFO] [AUTH_REGISTER] Pat: New account created
+[10:06:39] [INFO] [CONNECT] Pat: Authenticated connection from ('127.0.0.1', 46318)
+[10:06:39] [INFO] [RSA_REGISTER] Pat: Public key registered
+[10:06:44] [INFO] [SIGNATURE] Pat: Message signature INVALID ✗
+[10:06:44] [INFO] [MESSAGE] Pat: general: 
+[10:06:54] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[10:06:54] [INFO] [MESSAGE] Tom: general: 
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54168)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54174)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54182)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54192)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54194)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54206)
+[10:07:15] [INFO] New connection from ('127.0.0.1', 54222)
+[10:07:16] [INFO] New connection from ('127.0.0.1', 54230)
+[10:07:16] [INFO] New connection from ('127.0.0.1', 54238)
+[10:07:16] [INFO] New connection from ('127.0.0.1', 54242)
+[10:07:17] [INFO] New connection from ('127.0.0.1', 54250)
+[10:07:19] [INFO] [AUTH_REGISTER] alice: New account created
+[10:07:19] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 54250)
+[10:07:19] [INFO] [DISCONNECT] alice: Disconnected
+[10:07:19] [INFO] New connection from ('127.0.0.1', 54264)
+[10:07:20] [INFO] [AUTH_SUCCESS] alice: Login successful
+[10:07:20] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 54264)
+[10:07:20] [INFO] [DISCONNECT] alice: Disconnected
+[10:07:20] [INFO] New connection from ('127.0.0.1', 54272)
+[10:07:21] [INFO] New connection from ('127.0.0.1', 54280)
+[10:07:23] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50302)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50304)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50320)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50330)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50338)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50352)
+[10:08:15] [INFO] New connection from ('127.0.0.1', 50366)
+[10:08:16] [INFO] New connection from ('127.0.0.1', 45104)
+[10:08:16] [INFO] New connection from ('127.0.0.1', 45110)
+[10:08:16] [INFO] New connection from ('127.0.0.1', 45120)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45128)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45144)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45156)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45162)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45168)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45178)
+[10:08:24] [INFO] New connection from ('127.0.0.1', 45188)
+[10:08:25] [INFO] New connection from ('127.0.0.1', 46718)
+[10:08:25] [INFO] New connection from ('127.0.0.1', 46726)
+[10:08:25] [INFO] New connection from ('127.0.0.1', 46728)
+[10:08:26] [INFO] New connection from ('127.0.0.1', 46742)
+[10:08:28] [INFO] [AUTH_REGISTER] alice: New account created
+[10:08:28] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 46742)
+[10:08:28] [INFO] [DISCONNECT] alice: Disconnected
+[10:08:28] [INFO] New connection from ('127.0.0.1', 46744)
+[10:08:29] [INFO] [AUTH_SUCCESS] alice: Login successful
+[10:08:29] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 46744)
+[10:08:29] [INFO] [DISCONNECT] alice: Disconnected
+[10:08:29] [INFO] New connection from ('127.0.0.1', 46756)
+[10:08:30] [INFO] New connection from ('127.0.0.1', 46762)
+[10:08:32] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
+[10:11:10] [INFO] New connection from ('127.0.0.1', 35162)
+[10:11:44] [INFO] New connection from ('127.0.0.1', 46154)
+[10:12:04] [INFO] New connection from ('127.0.0.1', 59602)
+[10:12:04] [INFO] [AUTH_SUCCESS] TestAlice: Login successful
+[10:12:04] [INFO] [CONNECT] TestAlice: Authenticated connection from ('127.0.0.1', 59602)
+[10:12:09] [INFO] [DISCONNECT] TestAlice: Disconnected
+[10:12:49] [INFO] New connection from ('127.0.0.1', 46438)
+[10:12:49] [INFO] [AUTH_SUCCESS] Alice123: Login successful
+[10:12:49] [INFO] [CONNECT] Alice123: Authenticated connection from ('127.0.0.1', 46438)
+[10:12:49] [INFO] [DISCONNECT] Alice123: Disconnected
