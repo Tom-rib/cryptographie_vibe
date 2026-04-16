@@ -53,11 +53,16 @@ setup:
 		echo "✅ python3-venv is available"; \
 	fi
 	@if [ -d "venv" ]; then \
-		if ! venv/bin/python3 -c "import sys; sys.exit(0)" > /dev/null 2>&1; then \
-			echo "⚠️  Virtual environment is corrupted. Removing..."; \
+		if [ ! -f "venv/bin/activate" ]; then \
+			echo "⚠️  Virtual environment is incomplete. Removing..."; \
 			rm -rf venv; \
 		else \
-			echo "✅ Existing venv is OK"; \
+			if ! venv/bin/python3 -c "import sys; sys.exit(0)" > /dev/null 2>&1; then \
+				echo "⚠️  Virtual environment is corrupted. Removing..."; \
+				rm -rf venv; \
+			else \
+				echo "✅ Existing venv is OK"; \
+			fi \
 		fi \
 	fi
 	@if [ ! -d "venv" ]; then \
@@ -67,10 +72,14 @@ setup:
 			echo "❌ venv/bin/python3 not found after creation"; \
 			exit 1; \
 		fi; \
+		if [ ! -f "venv/bin/activate" ]; then \
+			echo "❌ venv/bin/activate not found after creation"; \
+			exit 1; \
+		fi; \
 		echo "✅ Virtual environment created"; \
 	fi
 	@echo "📦 Installing dependencies..."
-	@. venv/bin/activate && python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install -r requirements.txt
+	@venv/bin/python3 -m pip install --upgrade pip setuptools wheel && venv/bin/python3 -m pip install -r requirements.txt
 	@echo "✅ Setup complete! Ready to use."
 	@echo ""
 	@echo "Next steps:"
@@ -80,17 +89,17 @@ setup:
 setup-serveur: setup
 	@echo ""
 	@echo "🚀 Starting IRC server..."
-	@. venv/bin/activate && python3 src/server.py
+	@venv/bin/python3 src/server.py
 
 setup-client: setup
 	@echo ""
 	@echo "💻 Starting IRC client..."
-	@. venv/bin/activate && python3 src/client.py
+	@venv/bin/python3 src/client.py
 
 install:
 	@echo "📦 Installing dependencies..."
-	@if [ -f "venv/bin/activate" ]; then \
-		. venv/bin/activate && pip3 install -r requirements.txt; \
+	@if [ -f "venv/bin/python3" ]; then \
+		venv/bin/python3 -m pip install -r requirements.txt; \
 	else \
 		echo "❌ Virtual environment not found. Run: make setup"; \
 		exit 1; \
@@ -99,37 +108,37 @@ install:
 
 test:
 	@echo "🧪 Running all validation tests..."
-	@. venv/bin/activate && python3 tests/validate_jour1_partie1.py
-	@. venv/bin/activate && python3 tests/validate_jour1_partie2.py
-	@. venv/bin/activate && python3 tests/validate_jour2_partie1.py
-	@. venv/bin/activate && python3 tests/validate_jour2_partie2.py
-	@. venv/bin/activate && python3 tests/validate_jour3_partie1.py
-	@. venv/bin/activate && python3 tests/validate_jour3_partie2.py
+	@venv/bin/python3 tests/validate_jour1_partie1.py
+	@venv/bin/python3 tests/validate_jour1_partie2.py
+	@venv/bin/python3 tests/validate_jour2_partie1.py
+	@venv/bin/python3 tests/validate_jour2_partie2.py
+	@venv/bin/python3 tests/validate_jour3_partie1.py
+	@venv/bin/python3 tests/validate_jour3_partie2.py
 	@echo "✅ All tests completed"
 
 test-jour1p1:
 	@echo "🧪 Testing JOUR1_PARTIE1 (Chat)..."
-	@. venv/bin/activate && python3 tests/validate_jour1_partie1.py
+	@venv/bin/python3 tests/validate_jour1_partie1.py
 
 test-jour1p2:
 	@echo "🧪 Testing JOUR1_PARTIE2 (Auth MD5)..."
-	@. venv/bin/activate && python3 tests/validate_jour1_partie2.py
+	@venv/bin/python3 tests/validate_jour1_partie2.py
 
 test-jour2p1:
 	@echo "🧪 Testing JOUR2_PARTIE1 (Bcrypt)..."
-	@. venv/bin/activate && python3 tests/validate_jour2_partie1.py
+	@venv/bin/python3 tests/validate_jour2_partie1.py
 
 test-jour2p2:
 	@echo "🧪 Testing JOUR2_PARTIE2 (AES-256)..."
-	@. venv/bin/activate && python3 tests/validate_jour2_partie2.py
+	@venv/bin/python3 tests/validate_jour2_partie2.py
 
 test-jour3p1:
 	@echo "🧪 Testing JOUR3_PARTIE1 (RSA Keys)..."
-	@. venv/bin/activate && python3 tests/validate_jour3_partie1.py
+	@venv/bin/python3 tests/validate_jour3_partie1.py
 
 test-jour3p2:
 	@echo "🧪 Testing JOUR3_PARTIE2 (E2EE + Signatures)..."
-	@. venv/bin/activate && python3 tests/validate_jour3_partie2.py
+	@venv/bin/python3 tests/validate_jour3_partie2.py
 
 run:
 	@echo "🚀 Starting IRC server..."
