@@ -506,7 +506,7 @@ class ChatClient:
                 if not self.authenticated:
                     continue
 
-                user_input = input()
+                user_input = input(f"[{self.current_room}] > ")
                 if not user_input:
                     continue
 
