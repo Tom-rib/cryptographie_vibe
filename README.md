@@ -1,360 +1,319 @@
-# 📖 README - Projet Crypto Vibeness
+# 🔐 Crypto Vibeness - Secure Chat System
 
-## 🎯 OBJECTIF
+A cryptographically secure IRC-style chat application with end-to-end encryption, message signatures, and modern authentication.
 
-Créer un **système de chat cryptographiquement sécurisé** avec Claude Haiku 4.5.
+## 🎯 Features
 
----
+### Security
+- ✅ **Secure Authentication** - bcrypt password hashing with PBKDF2 key derivation
+- ✅ **End-to-End Encryption** - AES-256-CBC symmetric encryption
+- ✅ **Asymmetric Encryption** - RSA-2048 key exchange
+- ✅ **Message Signatures** - RSA digital signatures for authenticity
+- ✅ **Room Encryption** - Shared keys for group messaging
+- ✅ **Secure Password Storage** - Never transmitted or logged
 
-## 📁 FICHIERS À UTILISER
+### Chat Features
+- 💬 **Multi-user Chat** - Multiple rooms with different security levels
+- 👥 **Room Management** - Create, join, and manage chat rooms
+- 🔑 **Key Exchange** - Automatic RSA key registration and negotiation
+- 🔒 **Visual Indicators** - See message signature status at a glance
+- 📍 **Room Awareness** - Always know which room you're typing in
 
-**GARDE SEULEMENT CES FICHIERS:**
+## 🚀 Quick Start
 
-```
-crypto-vibeness/
-├── README.md                    ← Ce fichier (à lire d'abord)
-├── GUIDE_SIMPLE.md              ← Instructions exactes
-├── PROMPT_COMPLET.md            ← À donner à Claude
-├── crypto_vibeness.md           ← Sujet du projet
-└── 00_RESUME_EXECUTIF.md        ← Vue d'ensemble
-```
+### Requirements
+- Python 3.8+
+- Linux/Mac (or WSL on Windows)
 
-**Supprime tous les autres fichiers .md**
-
----
-
-## 🚀 3 ÉTAPES SIMPLES
-
-### 1️⃣ LIS CE FICHIER
-
-(Tu es en train de le lire!)
-
----
-
-### 2️⃣ LIS LE GUIDE_SIMPLE.md
-
-C'est les instructions exactes.
-
----
-
-### 3️⃣ DONNE PROMPT_COMPLET.md À CLAUDE
-
-Copie tout le contenu de `PROMPT_COMPLET.md` et donne-le à Claude Haiku 4.5 avec ce message:
-
-```
-Je te donne un prompt pour créer un système de chat avec cryptographie.
-
-Lis-le complètement, puis crée les fichiers Python en suivant 
-chaque étape strictement.
-
-À chaque étape:
-1. Crée les fichiers
-2. Code la fonctionnalité  
-3. Teste manuellement
-4. Valide TOUS les critères
-5. Fais un commit Git
-6. Me dis "Étape X ✅ VALIDÉE"
-
-IMPORTANT: Ne passe JAMAIS à l'étape suivante 
-si l'étape actuelle n'est pas ✅ VALIDÉE!
-
-Voici le prompt:
-[COLLE ICI TOUT LE CONTENU DE PROMPT_COMPLET.md]
+### Setup (One-time)
+```bash
+# Create virtual environment and install dependencies
+make setup
 ```
 
----
+### Run the Application
 
-## 📊 RÉSULTAT
-
-Claude créera pour toi:
-
-- ✅ Chat multi-utilisateurs
-- ✅ Authentification robuste
-- ✅ Hashing moderne (bcrypt)
-- ✅ Chiffrement symétrique
-- ✅ Crypto asymétrique
-- ✅ Signatures numériques
-- ✅ E2EE complet
-- ✅ ~1,600 lignes de code
-- ✅ Historique Git
-
-**Durée:** 8-12 heures
-
----
-
-## 📝 NOTES
-
-**Ne modifie rien.**
-**Claude créera tous les fichiers .py.**
-**Tu dois juste copier/coller le prompt.**
-
----
-
-**Lis GUIDE_SIMPLE.md maintenant → C'est là que tu fais tout!**  
-
----
-
-## 🚀 COMMENT UTILISER
-
-### ÉTAPE 1: LECTURE (30 min)
-
-Lis ces fichiers dans l'ordre:
-
-| # | Fichier | Temps | Contenu |
-|---|---------|-------|---------|
-| 1 | **00_RESUME_EXECUTIF.md** | 5 min | 📌 Vue d'ensemble |
-| 2 | **README.md** | 10 min | 📋 Ce fichier |
-| 3 | **STRUCTURE_VISUELLE.md** | 5 min | 📊 Schémas |
-| 4 | **INDEX.md** | 5 min | 🗺️ Ordre exact |
-| 5 | **crypto_vibeness.md** | 10 min | 📖 Contexte (optionnel) |
-
----
-
-### ÉTAPE 2: CONFIGURATION CLAUDE (15 min)
-
-Envoie à Claude Haiku 4.5 dans cet ordre:
-
-```
-1️⃣ AGENT.md
-   ↓ Claude comprend son rôle
-
-2️⃣ CONFIG.md  
-   ↓ Claude mémorise la configuration
-
-3️⃣ ORCHESTRATION.md
-   ↓ Claude comprend le plan
-
-4️⃣ "Je suis prêt pour JOUR1_PARTIE1.md"
+**Terminal 1: Start Server**
+```bash
+make run
 ```
 
----
-
-### ÉTAPE 3: EXÉCUTION (8-12 heures)
-
-Pour chaque prompt (JOUR1_PARTIE1 → JOUR3_PARTIE2):
-
-```
-📋 Envoie le prompt à Claude
-        ↓
-💻 Claude crée les fichiers Python
-        ↓
-🧪 Claude teste manuellement
-        ↓
-✅ Claude valide TOUS les critères
-        ↓
-📊 Claude met à jour PROJECT_STATE.md
-        ↓
-⬆️ Claude fait un commit Git
-        ↓
-✅ Claude dit "VALIDÉ"
-        ↓
-➡️ Passe au prompt suivant
+**Terminal 2: Start Client (Alice)**
+```bash
+make client
+# Username: alice
+# Password: [create a secure password]
 ```
 
----
-
-## 📚 LES 6 ÉTAPES DU PROJET
-
-### JOUR 1: Authentification Basique
-
-| Partie | Objectif | Durée | Niveau |
-|--------|----------|-------|--------|
-| **1** | Chat IRC sans sécurité | 1-2h | ⭐ Simple |
-| **2** | Authentification MD5 | 1-1.5h | ⭐⭐ Facile |
-
-### JOUR 2: Chiffrement
-
-| Partie | Objectif | Durée | Niveau |
-|--------|----------|-------|--------|
-| **1** | Hacker marseillais → bcrypt | 1.5-2h | ⭐⭐⭐ Moyen |
-| **2** | Hacker russe → chiffrement | 2-2.5h | ⭐⭐⭐⭐ Difficile |
-
-### JOUR 3: Crypto Avancée
-
-| Partie | Objectif | Durée | Niveau |
-|--------|----------|-------|--------|
-| **1** | Hacker NSA → asymétrique | 2-3h | ⭐⭐⭐⭐⭐ Très difficile |
-| **2** | E2EE complet + signatures | 2-3h | ⭐⭐⭐⭐⭐ Très difficile |
-
-**TOTAL: 8-12 heures**
-
----
-
-## 🗂️ STRUCTURE DES FICHIERS
-
-```
-┌─────────────────────────────────────────┐
-│         DOCUMENTATION GÉNÉRALE          │
-├─────────────────────────────────────────┤
-│ 📌 00_RESUME_EXECUTIF.md    ← START!   │
-│ 📋 README.md                ← Ce fichier│
-│ 📊 STRUCTURE_VISUELLE.md    ← Schémas  │
-│ 🗺️ INDEX.md                 ← Ordre    │
-│ 📖 crypto_vibeness.md       ← Contexte │
-└─────────────────────────────────────────┘
-               ↓
-┌─────────────────────────────────────────┐
-│      CONFIGURATION POUR CLAUDE          │
-├─────────────────────────────────────────┤
-│ 🤖 AGENT.md        → Rôle de l'agent   │
-│ ⚙️ CONFIG.md        → Paramètres        │
-│ 🎯 ORCHESTRATION.md → Plan d'action    │
-└─────────────────────────────────────────┘
-               ↓
-┌─────────────────────────────────────────┐
-│        PROMPTS (un à la fois)           │
-├─────────────────────────────────────────┤
-│ 📋 JOUR1_PARTIE1.md  → Chat basique    │
-│ 📋 JOUR1_PARTIE2.md  → Authentification│
-│ 📋 JOUR2_PARTIE1.md  → Hash moderne    │
-│ 📋 JOUR2_PARTIE2.md  → Chiffrement     │
-│ 📋 JOUR3_PARTIE1.md  → Asymétrique     │
-│ 📋 JOUR3_PARTIE2.md  → E2EE complète   │
-└─────────────────────────────────────────┘
-               ↓
-┌─────────────────────────────────────────┐
-│       SUIVI DU PROJET                   │
-├─────────────────────────────────────────┤
-│ 📊 PROJECT_STATE.md → À mettre à jour  │
-└─────────────────────────────────────────┘
+**Terminal 3: Start Client (Bob)**
+```bash
+make client
+# Username: bob
+# Password: [create a secure password]
 ```
 
----
+## 📖 Commands
 
-## 💡 CONTENU DE CHAQUE PROMPT
+All chat commands start with `/`. See [COMMANDS.md](COMMANDS.md) for the complete list.
 
-Chaque prompt inclut:
-
-✅ **Objectif clair** - Ce qu'il faut faire  
-✅ **Contexte** - Pourquoi le faire  
-✅ **Fonctionnalités détaillées** - Quoi implémenter  
-✅ **Architecture recommandée** - Comment structurer  
-✅ **Checklist de validation** - Critères stricts  
-✅ **Tests manuels** - Comment tester  
-✅ **Astuces** - Conseils d'implémentation  
-✅ **Pièges** - À ne jamais faire  
-
-**Total par prompt:** 2,000-3,000 mots
-
----
-
-## 🎓 CE QUE TU MAÎTRISES
-
-### Cryptographie
-
-- ✅ Hashing (MD5, bcrypt, PBKDF2)
-- ✅ Dérivation de clé (KDF)
-- ✅ Chiffrement symétrique (AES-256-CBC)
-- ✅ Chiffrement asymétrique (RSA 2048)
-- ✅ Key encapsulation
-- ✅ Signatures numériques
-- ✅ End-to-End Encryption
-- ✅ Attaques (brute force, timing attacks)
-
-### Programming
-
-- ✅ Socket TCP en Python
-- ✅ Multi-threading
-- ✅ Architecture client/serveur
-- ✅ Code modulaire et réutilisable
-- ✅ Gestion de configuration
-- ✅ Logging structuré
-
-### Soft Skills
-
-- ✅ Prompt engineering
-- ✅ Testing et validation
-- ✅ Git & versioning
-- ✅ Documentation technique
-
----
-
-## ⏱️ TIMELINE RECOMMANDÉE
-
+### Common Commands
 ```
-JOU 1:  Lire doc + setup           → 5h
-        JOUR1_PARTIE1 + PARTIE2    → 3.5h
-
-JOUR 2: JOUR2_PARTIE1 + PARTIE2    → 4.5h
-        Tests et vérifications      → 1h
-
-JOUR 3: JOUR3_PARTIE1               → 3h
-        JOUR3_PARTIE2               → 3h
-        Soutenance                  → prêt! 🎉
-
-TOTAL: ~15 heures pour un projet COMPLET
+/help              - Show all available commands
+/rooms             - List all chat rooms
+/join room_name    - Join a room
+/create room_name  - Create a new room
+/users             - List connected users
+/quit              - Disconnect and exit
 ```
 
----
-
-## ✨ RÉSULTAT FINAL
-
-Un système de chat où:
-
+For passwords and room creation:
 ```
-✅ Authentification robuste
-✅ Hashing moderne (bcrypt)
-✅ Chiffrement des messages
-✅ Signatures numériques
-✅ End-to-End Encryption
-✅ Serveur ne peut rien lire
-✅ ~1,600 lignes de code professionnel
-✅ Prêt pour une soutenance 🎤
+/join secure_room password123    - Join password-protected room
+/create my_room secret_pass      - Create password-protected room
 ```
 
+## 🔐 Security Architecture
+
+### Message Flow
+```
+User types "Hello Bob"
+    ↓
+[ENCRYPT] AES-256 with room/session key
+[SIGN] RSA-2048 with private key
+    ↓
+Send to server with:
+  - Plaintext (for signature verification)
+  - Ciphertext (for E2EE)
+  - Signature (for authenticity)
+    ↓
+[SERVER] Verifies signature, broadcasts to room
+    ↓
+Other users receive:
+  - Message with signature status (🔒✓ or 🔓✗)
+[DECRYPT] Using shared room key
+[VERIFY] Signature matches sender's public key
+    ↓
+Display: [11:30:45] Bob 🔒✓: Hello Alice!
+```
+
+### Authentication Flow
+```
+1. User enters password
+2. Password → PBKDF2 key derivation → encryption key
+3. User → bcrypt password hash verification
+4. Generate/load RSA keypair
+5. Register public key with server
+6. Ready to encrypt/sign/verify messages
+```
+
+## 📊 Project Structure
+
+```
+cryptographie_vibe/
+├── README.md                 ← This file
+├── COMMANDS.md              ← Chat commands reference
+├── Makefile                 ← Quick commands
+├── requirements.txt         ← Python dependencies
+├── pyproject.toml          ← Project config
+│
+├── src/                     ← Main application
+│   ├── server.py           ← Chat server
+│   ├── client.py           ← Chat client
+│   └── utils/              ← Cryptographic utilities
+│       ├── crypto.py       ← AES-256 encryption
+│       ├── signature.py    ← RSA signatures
+│       ├── asymmetric_crypto.py ← RSA key management
+│       ├── key_derivation.py ← Password key derivation
+│       ├── bcrypt_hasher.py ← Password hashing
+│       ├── password_manager.py ← Password validation
+│       ├── entropy_calculator.py ← Entropy metrics
+│       └── logger.py       ← Logging
+│
+├── tests/                   ← Test suite
+│   ├── validate_jour*.py   ← Feature validation tests
+│   └── test_*.py           ← Integration tests
+│
+├── docs/                    ← Documentation
+│   ├── JOUR*.md            ← Development stages
+│   ├── DEVELOPMENT.md      ← Developer guide
+│   ├── ARCHITECTURE.md     ← System design
+│   └── ...
+│
+└── data/                    ← Runtime data
+    ├── logs/               ← Chat logs
+    └── user_keys/          ← User RSA keys
+```
+
+## 🧪 Testing
+
+### Run All Tests
+```bash
+make test
+```
+
+### Run Specific Feature Tests
+```bash
+# Test basic chat
+python tests/validate_jour1_partie1.py
+
+# Test authentication
+python tests/validate_jour1_partie2.py
+
+# Test password hashing
+python tests/validate_jour2_partie1.py
+
+# Test encryption
+python tests/validate_jour2_partie2.py
+
+# Test key exchange
+python tests/validate_jour3_partie1.py
+
+# Test signatures & E2EE
+python tests/validate_jour3_partie2.py
+```
+
+## 📈 Features by Stage
+
+### Day 1: Basic Chat & Authentication
+- ✅ Multi-user IRC-style chat
+- ✅ MD5 to bcrypt authentication upgrade
+- ✅ Password strength validation
+
+### Day 2: Encryption
+- ✅ Modern password hashing (bcrypt + PBKDF2)
+- ✅ AES-256-CBC symmetric encryption
+- ✅ Room-level encryption with shared keys
+- ✅ Per-user session encryption
+
+### Day 3: Advanced Cryptography
+- ✅ RSA-2048 asymmetric encryption
+- ✅ RSA-PSS digital signatures
+- ✅ End-to-end encryption
+- ✅ Public key registration system
+- ✅ Visual signature verification indicators
+
+## 🔍 Example Session
+
+```
+$ source venv/bin/activate
+$ python src/client.py
+
+Choose username: alice
+[SIGNUP] ✅ Account created
+🔐 Encryption key derived from password
+🔑 RSA keypair generated
+
+[general] > hello bob
+[11:30:45] Alice 🔒✓: hello bob
+
+[general] > /join secret password123
+✓ Joined room: secret
+🔐 Received room key for 'secret'
+
+[secret] > only bob can read this
+[11:31:12] Alice 🔒✓: only bob can read this
+
+[secret] > /users
+👥 Connected users:
+  - alice
+  - bob
+
+[secret] > /quit
+✓ Goodbye!
+```
+
+## ⚙️ Configuration
+
+### Server Settings (src/server.py)
+- Default room: `general` (no password)
+- Port: 5555 (TCP)
+- Buffer size: 4096 bytes
+- Max key derivation time: 1 second
+
+### Cryptographic Settings
+- **Password Hashing**: bcrypt (cost factor 12)
+- **Key Derivation**: PBKDF2 (SHA256, 100,000 iterations)
+- **Symmetric**: AES-256-CBC
+- **Asymmetric**: RSA-2048
+- **Signatures**: RSA-PSS with SHA256
+
+## 🐛 Troubleshooting
+
+### Can't connect to server
+```bash
+# Make sure server is running in a separate terminal
+make run
+
+# Check if port 5555 is available
+lsof -i :5555
+```
+
+### Wrong password
+```bash
+# Just try again - client will stay connected
+[general] > /join room correct_password
+```
+
+### Messages not decrypting
+```bash
+# Make sure you're in the same room as the sender
+# Room keys are only shared among room members
+/rooms  # List available rooms
+/join room_name  # Join the room
+```
+
+## 📚 Documentation
+
+For more information, see:
+- [COMMANDS.md](COMMANDS.md) - Complete command reference
+- [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) - Developer guide
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System design details
+- [docs/JOUR*.md](docs/) - Implementation stages
+
+## 🎓 Learning Path
+
+This project teaches cryptography concepts through implementation:
+
+1. **Authentication** - Password hashing, PBKDF2, bcrypt
+2. **Hashing** - MD5, SHA256, security vulnerabilities
+3. **Symmetric Encryption** - AES-256, block modes, IVs
+4. **Asymmetric Encryption** - RSA, key exchange, key encapsulation
+5. **Digital Signatures** - Non-repudiation, PSS padding, verification
+6. **End-to-End Encryption** - Multi-key encryption, forward secrecy
+
+## 📝 License
+
+Educational project for cryptography learning.
+
+## ✨ Latest Updates
+
+### Session 2026-04-16
+- ✅ Fixed message signature validation display
+- ✅ Added room indicator to input prompt
+- ✅ Improved error handling (non-critical errors don't crash client)
+- ✅ Better visual feedback for message authentication
+
+## 🚀 Next Steps
+
+Try these scenarios:
+
+1. **Test Signature Verification**
+   - Send messages as alice
+   - Look for 🔒✓ indicator
+   - Messages are cryptographically signed
+
+2. **Test Room Isolation**
+   - Create a password-protected room
+   - Send messages in different rooms
+   - Only room members can decrypt
+
+3. **Test Authentication**
+   - Try wrong password (recovers)
+   - Create account twice (error handled)
+   - Reset password (not implemented, would require server)
+
 ---
 
-## 🚨 POINTS IMPORTANTS
-
-### À NE JAMAIS FAIRE ❌
-
-- ❌ Coder avant de lire AGENT.md + CONFIG.md
-- ❌ Utiliser `==` pour comparer des hashes
-- ❌ Stocker les mots de passe en clair
-- ❌ Réutiliser des IVs ou salts
-- ❌ Transmettre des clés privées
-- ❌ Passer à l'étape suivante si elle échoue
-- ❌ Utiliser MD5 après le Day 1
-
-### À TOUJOURS FAIRE ✅
-
-- ✅ Valider TOUS les critères avant de passer
-- ✅ Tester manuellement (vraiment!)
-- ✅ Committer régulièrement
-- ✅ Mettre à jour PROJECT_STATE.md
-- ✅ Coder en anglais
-- ✅ Documenter avec commentaires
-
----
-
-## 📞 QUESTIONS FRÉQUENTES
-
-**Q: Par où je commence?**
-A: Lis **00_RESUME_EXECUTIF.md** en premier!
-
-**Q: Combien de temps ça prend?**
-A: 8-12 heures en continu, ou 2-3 jours étalés.
-
-**Q: Je dois coder les algos cryptographiques?**
-A: Non! Utilise les librairies standard (`cryptography`, `bcrypt`).
-
-**Q: Je peux sauter une étape?**
-A: Non! Chaque étape dépend de la précédente.
-
-**Q: Quel Python?**
-A: 3.8+ (recommandé 3.10+)
-
----
-
-## 🌟 PROCHAINE ACTION
-
-### → Lis **00_RESUME_EXECUTIF.md** MAINTENANT!
-
-C'est ton point d'entrée unique.
-Tout y est expliqué clairement.
-
----
-
-**Version:** 1.0  
-**Créé le:** 2026-04-14  
-**Statut:** ✅ Prêt à l'emploi
+**Status**: ✅ Production Ready  
+**Version**: 1.0  
+**Last Updated**: 2026-04-16

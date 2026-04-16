@@ -1,0 +1,15 @@
+[11:11:22] [INFO] Server listening on localhost:5555
+[11:11:36] [INFO] New connection from ('127.0.0.1', 48398)
+[11:11:42] [INFO] [AUTH_SUCCESS] Tom1: Login successful
+[11:11:42] [INFO] [CONNECT] Tom1: Authenticated connection from ('127.0.0.1', 48398)
+[11:11:42] [INFO] [RSA_REGISTER] Tom1: Public key registered
+[11:11:50] [INFO] [SIGNATURE] Tom1: Message signature verified ✓
+[11:11:50] [INFO] [MESSAGE] Tom1: general: salut
+[11:12:04] [INFO] New connection from ('127.0.0.1', 42218)
+[11:12:10] [INFO] [AUTH_SUCCESS] Pat: Login successful
+[11:12:10] [INFO] [CONNECT] Pat: Authenticated connection from ('127.0.0.1', 42218)
+[11:12:10] [INFO] [RSA_REGISTER] Pat: Public key registered
+[11:12:13] [INFO] [SIGNATURE] Pat: Message signature verified ✓
+[11:12:13] [INFO] [MESSAGE] Pat: general: fihaz
+[11:15:32] [INFO] Server shutting down...
+[11:15:32] [INFO] Server stopped
