@@ -21,18 +21,50 @@ A cryptographically secure IRC-style chat application with end-to-end encryption
 
 ## 🚀 Quick Start
 
+### Prerequisites (Install First!)
+
+Before cloning, make sure you have these tools installed:
+
+```bash
+# Debian/Ubuntu
+sudo apt-get install -y git make
+
+# AlmaLinux/Fedora/RHEL
+sudo dnf install -y git make
+
+# Arch Linux
+sudo pacman -S git make
+
+# macOS (with Homebrew)
+brew install git make
+```
+
+**Check if installed:**
+```bash
+git --version
+make --version
+```
+
 ### Requirements
-- Python 3.8+
-- Linux/Mac (or WSL on Windows)
+
+- **Git** - For cloning the repository
+- **Make** - For running setup commands
+- **Python 3.8+** - For running the application
+- **Linux/Mac** (or WSL on Windows)
 
 ### Setup (One-time)
+
 ```bash
+# Clone repository
+git clone https://github.com/Tom-rib/cryptographie_vibe.git
+cd cryptographie_vibe
+
 # Create virtual environment and install dependencies
 # This automatically handles:
 # - Installing python3-venv if needed (with sudo)
-# - Updating apt-get if needed
+# - Updating package managers if needed
 # - Creating and configuring venv
-# - Installing all Python dependencies
+# - Installing pip and all Python dependencies
 make setup
 ```
 

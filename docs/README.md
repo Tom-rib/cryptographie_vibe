@@ -5,7 +5,8 @@ This folder contains the project documentation organized for different audiences
 ## Quick Links
 
 ### 🚀 For Getting Started
-- **[../README.md](../README.md)** - Start here! Project overview and quick start
+- **[PREREQUISITES.md](PREREQUISITES.md)** - ⭐ START HERE! System requirements and installation
+- **[../README.md](../README.md)** - Project overview and quick start
 - **[INSTALLATION_WSL.md](INSTALLATION_WSL.md)** - ⚠️ Having venv issues on WSL? Read this!
 - **[../COMMANDS.md](../COMMANDS.md)** - Chat commands reference
 

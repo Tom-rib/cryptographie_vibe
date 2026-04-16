@@ -2,6 +2,23 @@
 
 Si vous obtenez l'erreur `python3-venv not available`, ce guide vous aidera.
 
+## ⚙️ Prérequis (À installer d'abord!)
+
+Avant de commencer, assurez-vous d'avoir ces outils:
+
+```bash
+# Sur WSL (Debian/Ubuntu)
+sudo apt-get update
+sudo apt-get install -y git make python3-venv
+```
+
+Vérifiez que tout est installé:
+```bash
+git --version
+make --version
+python3 --version
+```
+
 ## ❌ Erreur courante
 
 ```
@@ -27,10 +44,11 @@ make setup
 3. ✅ Installer `python3-venv` avec apt-get
 4. ✅ Si ça échoue (404 Not Found), réessayer avec `--fix-missing`
 5. ✅ Créer le virtual environment
-6. ✅ Upgrader pip, setuptools, wheel
-7. ✅ Installer toutes les dépendances Python
-8. ✅ Vérifier que tout fonctionne
-9. ✅ **Succès!** ✅
+6. ✅ Vérifier et installer pip si nécessaire
+7. ✅ Upgrader pip, setuptools, wheel
+8. ✅ Installer toutes les dépendances Python
+9. ✅ Vérifier que tout fonctionne
+10. ✅ **Succès!** ✅
 
 ## 🔧 Alternative: Script setup.sh
 
