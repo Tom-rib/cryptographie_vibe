@@ -560,9 +560,14 @@ class ChatClient:
             except EOFError:
                 self.running = False
                 break
-            except Exception as e:
-                print(f"✗ Send error: {e}")
+            except KeyboardInterrupt:
+                # Allow Ctrl+C to exit gracefully
                 self.running = False
+                break
+            except Exception as e:
+                # Non-critical errors: print and continue instead of stopping
+                print(f"⚠️  Error: {e}")
+                continue
 
     def run(self):
         """Main client loop"""
