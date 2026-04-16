@@ -40,6 +40,16 @@ Le script va automatiquement installer `python3-venv` via apt-get.
 
 Si `make setup` ne fonctionne pas, vous pouvez installer manuellement:
 
+### ⚠️ Venv Corrompu?
+
+Si vous voyez: `ModuleNotFoundError: No module named 'pip'`
+
+**Solution rapide:**
+```bash
+make clean-venv    # Supprime le venv corrompu
+make setup         # Crée un nouveau venv frais
+```
+
 ### Étape 1: Installer python3-venv
 ```bash
 # Sur Debian/Ubuntu
@@ -88,10 +98,19 @@ make help           # Affiche tous les commandes disponibles
 make setup          # Installation complète
 make test           # Lancer tous les tests
 make clean          # Nettoyer les fichiers temporaires
+make clean-venv     # Supprimer le venv (pour réinitialiser)
 make clean-all      # Nettoyer venv inclus
 ```
 
 ## 🐛 Troubleshooting
+
+### Erreur: "ModuleNotFoundError: No module named 'pip'"
+
+Le venv est corrompu. **Solution:**
+```bash
+make clean-venv     # Supprime le venv
+make setup          # Crée un nouveau venv frais et installe tout
+```
 
 ### Erreur: "Permission denied"
 ```bash

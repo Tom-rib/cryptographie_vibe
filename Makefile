@@ -1,4 +1,4 @@
-.PHONY: help install setup setup-serveur setup-client test run client clean lint format docs
+.PHONY: help install setup setup-serveur setup-client test run client clean clean-venv clean-all lint format docs
 
 # Check if we're in virtual environment
 VENV_PYTHON := venv/bin/python3
@@ -26,6 +26,7 @@ help:
 	@echo "  make test-jour3p1   Test JOUR3_PARTIE1 (RSA Keys)"
 	@echo "  make test-jour3p2   Test JOUR3_PARTIE2 (E2EE + Signatures)"
 	@echo "  make clean          Clean cache and temp files"
+	@echo "  make clean-venv     Remove virtual environment (to reset)"
 	@echo "  make clean-all      Clean cache, temp files, and venv"
 	@echo "  make lint           Run linter (pylint)"
 	@echo "  make format         Format code (black)"
@@ -46,13 +47,19 @@ setup:
 			exit 1; \
 		fi \
 	fi
+	@if [ -d "venv" ]; then \
+		if ! venv/bin/pip3 --version > /dev/null 2>&1; then \
+			echo "⚠️  Virtual environment is corrupted. Removing..."; \
+			rm -rf venv; \
+		fi \
+	fi
 	@if [ ! -d "venv" ]; then \
 		echo "📦 Creating virtual environment..."; \
 		python3 -m venv venv; \
 		echo "✅ Virtual environment created"; \
 	fi
 	@echo "📦 Installing dependencies..."
-	@. venv/bin/activate && pip3 install --upgrade pip && pip3 install -r requirements.txt
+	@. venv/bin/activate && python3 -m pip install --upgrade pip setuptools wheel && python3 -m pip install -r requirements.txt
 	@echo "✅ Setup complete! Ready to use."
 	@echo ""
 	@echo "Next steps:"
@@ -131,6 +138,12 @@ clean:
 	rm -rf htmlcov/
 	rm -f *.log
 	@echo "✅ Cleaned"
+
+clean-venv:
+	@echo "🧹 Removing virtual environment..."
+	rm -rf venv/
+	@echo "✅ Virtual environment removed"
+	@echo "Run 'make setup' to create a fresh environment"
 
 clean-all: clean
 	@echo "🧹 Cleaning everything including venv..."

@@ -46,10 +46,23 @@ fi
 echo "🔌 Activating virtual environment..."
 source venv/bin/activate
 
+# Check if pip works in the virtual environment
+echo "🔍 Verifying pip in virtual environment..."
+if ! python3 -m pip --version > /dev/null 2>&1; then
+    echo "⚠️  Pip is broken in virtual environment. Removing and recreating..."
+    deactivate 2>/dev/null || true
+    rm -rf venv
+    python3 -m venv venv
+    source venv/bin/activate
+fi
+
+# Install/upgrade pip, setuptools, wheel first
+echo "📦 Upgrading pip and setuptools..."
+python3 -m pip install --upgrade pip setuptools wheel
+
 # Install dependencies
 echo "📦 Installing dependencies (this may take ~30 seconds)..."
-pip3 install -q --upgrade pip
-pip3 install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Verify installation
 echo "✅ Installation complete!"
