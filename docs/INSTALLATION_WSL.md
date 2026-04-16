@@ -22,9 +22,15 @@ make setup
 ```
 
 **C'est tout!** La commande `make setup` va:
-1. ✅ Vérifier et installer `python3-venv` si nécessaire (avec `sudo`)
-2. ✅ Créer le virtual environment
-3. ✅ Installer toutes les dépendances Python
+1. ✅ Vérifier si `python3-venv` est disponible
+2. ✅ Si non, exécuter `apt-get update`
+3. ✅ Installer `python3-venv` avec apt-get
+4. ✅ Si ça échoue (404 Not Found), réessayer avec `--fix-missing`
+5. ✅ Créer le virtual environment
+6. ✅ Upgrader pip, setuptools, wheel
+7. ✅ Installer toutes les dépendances Python
+8. ✅ Vérifier que tout fonctionne
+9. ✅ **Succès!** ✅
 
 ## 🔧 Alternative: Script setup.sh
 
@@ -38,16 +44,23 @@ Le script va automatiquement installer `python3-venv` via apt-get.
 
 ## 📋 Options d'installation manuelles
 
-Si `make setup` ne fonctionne pas, vous pouvez installer manuellement:
+Si `make setup` continue à échouer après avoir attendu un peu, vous pouvez installer manuellement:
 
-### ⚠️ Venv Corrompu?
+### ⚠️ Erreur: "404 Not Found" lors de apt install?
 
-Si vous voyez: `ModuleNotFoundError: No module named 'pip'`
-
-**Solution rapide:**
+C'est un problème réseau temporaire. **Solution:**
 ```bash
-make clean-venv    # Supprime le venv corrompu
-make setup         # Crée un nouveau venv frais
+# Attendre 1-2 minutes, puis réessayer
+make clean-venv     # Supprime le venv incomplet
+make setup          # Réessaye l'installation (apt-get retry avec --fix-missing)
+```
+
+### ⚠️ Erreur: "ModuleNotFoundError: No module named 'pip'"
+
+Le venv est corrompu. **Solution:**
+```bash
+make clean-venv     # Supprime le venv corrompu
+make setup          # Crée un nouveau venv frais et installe tout
 ```
 
 ### Étape 1: Installer python3-venv

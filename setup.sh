@@ -13,56 +13,56 @@ echo "🐍 Checking Python version..."
 python3 --version || (echo "❌ Python3 not found. Please install Python 3.9 or higher." && exit 1)
 
 # Check if python3-venv is installed
-echo "🔍 Checking system dependencies..."
+echo "🔍 Checking and installing system dependencies..."
 if ! python3 -m venv --help > /dev/null 2>&1; then
     echo "⚠️  python3-venv not found. Installing..."
     if command -v apt-get > /dev/null; then
-        echo "📦 Running: sudo apt-get update && sudo apt-get install -y python3-venv"
-        sudo apt-get update && sudo apt-get install -y python3-venv
-        if [ $? -ne 0 ]; then
-            echo "❌ Failed to install python3-venv"
-            exit 1
+        echo "📦 Running: sudo apt-get update..."
+        sudo apt-get update || true
+        
+        echo "📦 Running: sudo apt-get install -y python3-venv..."
+        if ! sudo apt-get install -y python3-venv; then
+            echo "⚠️  First attempt failed. Trying with --fix-missing..."
+            if ! sudo apt-get install --fix-missing -y python3-venv; then
+                echo "❌ Failed to install python3-venv"
+                echo "Try manually: sudo apt-get update && sudo apt-get install -y python3-venv"
+                exit 1
+            fi
         fi
+        echo "✅ python3-venv installed"
     else
-        echo "❌ Could not install python3-venv automatically."
-        echo "   Please install manually based on your system:"
-        echo "   Debian/Ubuntu: sudo apt install python3-venv"
-        echo "   Fedora: sudo dnf install python3-venv"
-        echo "   Arch: sudo pacman -S python-venv"
+        echo "❌ apt-get not found. Please install python3-venv manually."
         exit 1
+    fi
+else
+    echo "✅ python3-venv is available"
+fi
+
+# Remove corrupted venv if it exists
+if [ -d "venv" ]; then
+    echo "🔍 Checking existing virtual environment..."
+    if ! venv/bin/python3 -c "import sys; sys.exit(0)" > /dev/null 2>&1; then
+        echo "⚠️  Virtual environment is corrupted. Removing..."
+        deactivate 2>/dev/null || true
+        rm -rf venv
+    else
+        echo "✅ Existing venv is OK"
     fi
 fi
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "📦 Creating virtual environment..."
-    python3 -m venv venv
+    python3 -m venv venv || (echo "❌ Failed to create venv" && exit 1)
+    
+    if [ ! -f "venv/bin/python3" ]; then
+        echo "❌ venv/bin/python3 not found after creation"
+        exit 1
+    fi
     echo "✅ Virtual environment created"
 else
     echo "✅ Virtual environment already exists"
 fi
-
-# Activate virtual environment
-echo "🔌 Activating virtual environment..."
-source venv/bin/activate
-
-# Check if pip works in the virtual environment
-echo "🔍 Verifying pip in virtual environment..."
-if ! python3 -m pip --version > /dev/null 2>&1; then
-    echo "⚠️  Pip is broken in virtual environment. Removing and recreating..."
-    deactivate 2>/dev/null || true
-    rm -rf venv
-    python3 -m venv venv
-    source venv/bin/activate
-fi
-
-# Install/upgrade pip, setuptools, wheel first
-echo "📦 Upgrading pip and setuptools..."
-python3 -m pip install --upgrade pip setuptools wheel
-
-# Install dependencies
-echo "📦 Installing dependencies (this may take ~30 seconds)..."
-python3 -m pip install -r requirements.txt
 
 # Verify installation
 echo "✅ Installation complete!"

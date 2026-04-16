@@ -28,10 +28,15 @@ A cryptographically secure IRC-style chat application with end-to-end encryption
 ### Setup (One-time)
 ```bash
 # Create virtual environment and install dependencies
+# This automatically handles:
+# - Installing python3-venv if needed (with sudo)
+# - Updating apt-get if needed
+# - Creating and configuring venv
+# - Installing all Python dependencies
 make setup
 ```
 
-> **⚠️ On WSL?** If you see an error about `python3-venv`, see [INSTALLATION_WSL.md](docs/INSTALLATION_WSL.md) - it's automatically handled by `make setup`!
+> **⚠️ On WSL?** If you see an error about `python3-venv`, don't worry! `make setup` now handles it automatically, including running `apt-get update` and retrying with `--fix-missing` if needed. See [docs/INSTALLATION_WSL.md](docs/INSTALLATION_WSL.md) for troubleshooting.
 
 ### Run the Application
 

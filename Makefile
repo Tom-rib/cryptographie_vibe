@@ -36,26 +36,37 @@ help:
 
 setup:
 	@echo "🔧 Setting up project..."
-	@echo "🔍 Checking system dependencies..."
+	@echo "🔍 Checking and installing system dependencies..."
 	@if ! python3 -m venv --help > /dev/null 2>&1; then \
 		echo "⚠️  python3-venv not found. Installing..."; \
 		if command -v apt-get > /dev/null; then \
-			sudo apt-get update && sudo apt-get install -y python3-venv; \
+			echo "📦 Running: sudo apt-get update..."; \
+			sudo apt-get update || true; \
+			echo "📦 Running: sudo apt-get install -y python3-venv..."; \
+			sudo apt-get install -y python3-venv || (echo "❌ apt-get install failed. Trying apt-get install --fix-missing..."; sudo apt-get install --fix-missing -y python3-venv) || (echo "❌ Could not install python3-venv"; echo "   Try manually: sudo apt-get update && sudo apt-get install -y python3-venv"; exit 1); \
 		else \
-			echo "❌ Could not install python3-venv automatically."; \
-			echo "   Please install manually: sudo apt install python3-venv"; \
+			echo "❌ apt-get not found. Please install python3-venv manually."; \
 			exit 1; \
-		fi \
+		fi; \
+		echo "✅ python3-venv installed"; \
+	else \
+		echo "✅ python3-venv is available"; \
 	fi
 	@if [ -d "venv" ]; then \
-		if ! venv/bin/pip3 --version > /dev/null 2>&1; then \
+		if ! venv/bin/python3 -c "import sys; sys.exit(0)" > /dev/null 2>&1; then \
 			echo "⚠️  Virtual environment is corrupted. Removing..."; \
 			rm -rf venv; \
+		else \
+			echo "✅ Existing venv is OK"; \
 		fi \
 	fi
 	@if [ ! -d "venv" ]; then \
 		echo "📦 Creating virtual environment..."; \
-		python3 -m venv venv; \
+		python3 -m venv venv || (echo "❌ Failed to create venv"; exit 1); \
+		if [ ! -f "venv/bin/python3" ]; then \
+			echo "❌ venv/bin/python3 not found after creation"; \
+			exit 1; \
+		fi; \
 		echo "✅ Virtual environment created"; \
 	fi
 	@echo "📦 Installing dependencies..."
