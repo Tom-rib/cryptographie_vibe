@@ -366,7 +366,17 @@ class ChatClient:
                 # Fallback to plaintext (for backward compatibility)
                 content = msg.get("content", "")
 
-            print(f"{color}[{timestamp}] {from_user}{reset}: {content}")
+            # Add signature status indicator (JOUR3_PARTIE2)
+            signature_indicator = ""
+            if "signature_valid" in msg:
+                sig_status = msg["signature_valid"]
+                if sig_status is True:
+                    signature_indicator = " 🔒✓"
+                elif sig_status is False:
+                    signature_indicator = " 🔓✗"
+                # else: None means no signature, show nothing
+
+            print(f"{color}[{timestamp}] {from_user}{signature_indicator}{reset}: {content}")
 
         elif msg_type == "system":
             content = msg.get('content', '')
@@ -520,6 +530,7 @@ class ChatClient:
                     msg_dict = {
                         "type": "message",
                         "room": self.current_room,
+                        "content": user_input,  # Always include plaintext for signature verification
                     }
                     
                     if CRYPTO_AVAILABLE:
@@ -535,12 +546,6 @@ class ChatClient:
                             except Exception as e:
                                 print(f"✗ Encryption error: {e}")
                                 continue
-                        else:
-                            # Fallback to plaintext
-                            msg_dict["content"] = user_input
-                    else:
-                        # Fallback to plaintext
-                        msg_dict["content"] = user_input
                     
                     # Sign the message with private key (JOUR3_PARTIE2)
                     if CRYPTO_AVAILABLE and self.private_key:

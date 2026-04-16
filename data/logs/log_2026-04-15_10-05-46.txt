@@ -76,3 +76,5 @@
 [10:12:49] [INFO] [AUTH_SUCCESS] Alice123: Login successful
 [10:12:49] [INFO] [CONNECT] Alice123: Authenticated connection from ('127.0.0.1', 46438)
 [10:12:49] [INFO] [DISCONNECT] Alice123: Disconnected
+[10:25:48] [INFO] Server shutting down...
+[10:25:48] [INFO] Server stopped

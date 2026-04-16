@@ -604,7 +604,7 @@ class ClientHandler(threading.Thread):
                     broadcast_msg["iv"] = msg.get("iv")
                 
                 # Verify signature if present (JOUR3_PARTIE2)
-                signature_valid = False
+                signature_valid = None  # None means no signature present
                 if "signature" in msg and self.username in self.public_key_registry:
                     try:
                         signature = msg.get("signature")
@@ -618,7 +618,6 @@ class ClientHandler(threading.Thread):
                             
                             # Verify signature
                             signature_valid = RSASignature.verify(sender_pub_key, plaintext, signature)
-                            broadcast_msg["signature_valid"] = signature_valid
                             
                             if signature_valid:
                                 self.logger.log("SIGNATURE", self.username, "Message signature verified ✓")
@@ -626,6 +625,10 @@ class ClientHandler(threading.Thread):
                                 self.logger.log("SIGNATURE", self.username, "Message signature INVALID ✗")
                     except Exception as e:
                         self.logger.error(f"Failed to verify signature: {e}")
+                
+                # Always include signature status in broadcast (None = unsigned, True = valid, False = invalid)
+                broadcast_msg["signature_valid"] = signature_valid
+
 
                 self.logger.log("MESSAGE", self.username, f"{self.current_room}: {msg.get('content', '')}")
                 self.broadcast_to_room(broadcast_msg)

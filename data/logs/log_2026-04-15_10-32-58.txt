@@ -1,0 +1,47 @@
+[10:32:58] [INFO] Server listening on localhost:5555
+[10:33:09] [INFO] New connection from ('127.0.0.1', 38452)
+[10:33:22] [INFO] [AUTH_REGISTER] Tom: New account created
+[10:33:22] [INFO] [CONNECT] Tom: Authenticated connection from ('127.0.0.1', 38452)
+[10:33:22] [INFO] [RSA_REGISTER] Tom: Public key registered
+[10:33:32] [INFO] New connection from ('127.0.0.1', 52338)
+[10:33:36] [INFO] [AUTH_REGISTER] Pat: New account created
+[10:33:36] [INFO] [CONNECT] Pat: Authenticated connection from ('127.0.0.1', 52338)
+[10:33:36] [INFO] [RSA_REGISTER] Pat: Public key registered
+[10:33:38] [INFO] [SIGNATURE] Pat: Message signature INVALID ✗
+[10:33:38] [INFO] [MESSAGE] Pat: general: 
+[10:33:44] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[10:33:44] [INFO] [MESSAGE] Tom: general: 
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50658)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50660)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50662)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50672)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50688)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50700)
+[10:33:50] [INFO] New connection from ('127.0.0.1', 50702)
+[10:33:51] [INFO] New connection from ('127.0.0.1', 50704)
+[10:33:51] [INFO] New connection from ('127.0.0.1', 50710)
+[10:33:51] [INFO] New connection from ('127.0.0.1', 50722)
+[10:33:52] [INFO] New connection from ('127.0.0.1', 50724)
+[10:33:54] [INFO] [AUTH_REGISTER] alice: New account created
+[10:33:54] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 50724)
+[10:33:54] [INFO] [DISCONNECT] alice: Disconnected
+[10:33:54] [INFO] New connection from ('127.0.0.1', 50730)
+[10:33:55] [INFO] [AUTH_SUCCESS] alice: Login successful
+[10:33:55] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 50730)
+[10:33:55] [INFO] [DISCONNECT] alice: Disconnected
+[10:33:55] [INFO] New connection from ('127.0.0.1', 60882)
+[10:33:57] [INFO] New connection from ('127.0.0.1', 60896)
+[10:33:59] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
+[10:35:11] [INFO] [CREATE_ROOM] Pat: <salon> (protected=True)
+[10:35:30] [INFO] [DISCONNECT] Pat: Disconnected
+[10:35:37] [INFO] New connection from ('127.0.0.1', 57228)
+[10:35:55] [INFO] New connection from ('127.0.0.1', 38102)
+[10:36:07] [INFO] [AUTH_REGISTER] Tom1: New account created
+[10:36:07] [INFO] [CONNECT] Tom1: Authenticated connection from ('127.0.0.1', 38102)
+[10:36:07] [INFO] [RSA_REGISTER] Tom1: Public key registered
+[10:36:33] [INFO] [JOIN_ROOM] Tom1: <salon>
+[10:36:37] [INFO] [SIGNATURE] Tom1: Message signature INVALID ✗
+[10:36:37] [INFO] [MESSAGE] Tom1: <salon>: 
+[10:37:29] [INFO] [JOIN_ROOM] Tom: <salon>
+[10:37:35] [INFO] [SIGNATURE] Tom: Message signature INVALID ✗
+[10:37:35] [INFO] [MESSAGE] Tom: <salon>: 
