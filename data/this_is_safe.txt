@@ -1,3 +1,0 @@
-Pat:bcrypt:12:REF4jb5002iTFMdb36rTlu:$2b$12$REF4jb5002iTFMdb36rTlu5.b65NapV.GFpUra2rpkifUuktNa.Xm
-Tom1:bcrypt:12:9IxOmb640yWAgF1oM6uV6O:$2b$12$9IxOmb640yWAgF1oM6uV6OioiNJfrlIRfTXqV9CcUxaQwuMkIuAv.
-alice:bcrypt:12:Nt9InO3ole5MV8.wunZ7zu:$2b$12$Nt9InO3ole5MV8.wunZ7zuT1YEPBfXbpclsOZBZ1JDiMGOy9cKfMG

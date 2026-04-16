@@ -1,2 +1,0 @@
-[13:54:33] [ERROR] Server error: [Errno 98] Address already in use
-[13:54:33] [INFO] Server stopped

@@ -52,7 +52,7 @@ junit.xml
 *.log
 *.pem
 keys/
-data/private_keys/
+data/
 *.db
 *.sqlite
 *.sqlite3

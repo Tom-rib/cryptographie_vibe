@@ -74,19 +74,19 @@ make setup
 
 **Terminal 1: Start Server**
 ```bash
-make run
+make setup-serveur
 ```
 
 **Terminal 2: Start Client (Alice)**
 ```bash
-make client
+make setup-client
 # Username: alice
 # Password: [create a secure password]
 ```
 
 **Terminal 3: Start Client (Bob)**
 ```bash
-make client
+make setup-client
 # Username: bob
 # Password: [create a secure password]
 ```
