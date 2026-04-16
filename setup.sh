@@ -64,6 +64,25 @@ else
     echo "✅ Virtual environment already exists"
 fi
 
+# Activate virtual environment
+echo "🔌 Activating virtual environment..."
+source venv/bin/activate
+
+# Verify and install pip if needed
+echo "🔍 Checking pip in virtual environment..."
+if ! python3 -m pip --version > /dev/null 2>&1; then
+    echo "⚠️  pip is missing. Installing with ensurepip..."
+    python3 -m ensurepip --upgrade || (echo "❌ Failed to install pip with ensurepip"; exit 1)
+fi
+
+# Install/upgrade pip, setuptools, wheel
+echo "📦 Upgrading pip, setuptools, and wheel..."
+python3 -m pip install --upgrade pip setuptools wheel || (echo "❌ Failed to upgrade pip tools"; exit 1)
+
+# Install dependencies
+echo "📦 Installing dependencies (this may take ~30 seconds)..."
+python3 -m pip install -r requirements.txt || (echo "❌ Failed to install dependencies"; exit 1)
+
 # Verify installation
 echo "✅ Installation complete!"
 echo ""

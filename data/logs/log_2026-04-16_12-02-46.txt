@@ -1,0 +1,15 @@
+[12:02:46] [INFO] Server listening on localhost:5555
+[12:03:01] [INFO] New connection from ('127.0.0.1', 56578)
+[12:03:14] [INFO] [AUTH_REGISTER] Tom1: New account created
+[12:03:14] [INFO] [CONNECT] Tom1: Authenticated connection from ('127.0.0.1', 56578)
+[12:03:14] [INFO] [RSA_REGISTER] Tom1: Public key registered
+[12:03:18] [INFO] [SIGNATURE] Tom1: Message signature verified ✓
+[12:03:18] [INFO] [MESSAGE] Tom1: general: daz
+[13:30:11] [INFO] New connection from ('127.0.0.1', 33976)
+[13:30:26] [INFO] [AUTH_REGISTER] Pat: New account created
+[13:30:26] [INFO] [CONNECT] Pat: Authenticated connection from ('127.0.0.1', 33976)
+[13:30:26] [INFO] [RSA_REGISTER] Pat: Public key registered
+[13:30:45] [INFO] [SIGNATURE] Pat: Message signature verified ✓
+[13:30:45] [INFO] [MESSAGE] Pat: general: la
+[13:31:46] [INFO] [SIGNATURE] Tom1: Message signature verified ✓
+[13:31:46] [INFO] [MESSAGE] Tom1: general: zaeaz

@@ -13,3 +13,31 @@
 [11:36:27] [INFO] [JOIN_ROOM] Tom1: <room>
 [11:36:30] [INFO] [SIGNATURE] Tom1: Message signature verified ✓
 [11:36:30] [INFO] [MESSAGE] Tom1: <room>: salut
+[11:32:52] [INFO] [SIGNATURE] Pat: Message signature verified ✓
+[11:32:52] [INFO] [MESSAGE] Pat: general: daz
+[11:33:21] [INFO] [DISCONNECT] Tom1: Disconnected
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41224)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41240)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41256)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41262)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41264)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41280)
+[11:33:25] [INFO] New connection from ('127.0.0.1', 41288)
+[11:33:26] [INFO] New connection from ('127.0.0.1', 41294)
+[11:33:26] [INFO] New connection from ('127.0.0.1', 41300)
+[11:33:26] [INFO] New connection from ('127.0.0.1', 41310)
+[11:33:27] [INFO] New connection from ('127.0.0.1', 41326)
+[11:33:29] [INFO] [AUTH_REGISTER] alice: New account created
+[11:33:29] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 41326)
+[11:33:29] [INFO] [DISCONNECT] alice: Disconnected
+[11:33:29] [INFO] New connection from ('127.0.0.1', 41332)
+[11:33:30] [INFO] [AUTH_SUCCESS] alice: Login successful
+[11:33:30] [INFO] [CONNECT] alice: Authenticated connection from ('127.0.0.1', 41332)
+[11:33:30] [INFO] [DISCONNECT] alice: Disconnected
+[11:33:30] [INFO] New connection from ('127.0.0.1', 41338)
+[11:33:32] [INFO] New connection from ('127.0.0.1', 41350)
+[11:33:34] [INFO] [AUTH_FAILED] alice: Too many wrong attempts
+[11:33:45] [INFO] [DISCONNECT] Pat: Disconnected
+[11:35:38] [INFO] New connection from ('127.0.0.1', 44676)
+[12:02:21] [INFO] Server shutting down...
+[12:02:21] [INFO] Server stopped

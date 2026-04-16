@@ -79,6 +79,10 @@ setup:
 		echo "✅ Virtual environment created"; \
 	fi
 	@echo "📦 Installing dependencies..."
+	@if ! venv/bin/python3 -m pip --version > /dev/null 2>&1; then \
+		echo "⚠️  pip is missing. Installing with ensurepip..."; \
+		venv/bin/python3 -m ensurepip --upgrade || (echo "❌ Failed to install pip"; exit 1); \
+	fi
 	@venv/bin/python3 -m pip install --upgrade pip setuptools wheel && venv/bin/python3 -m pip install -r requirements.txt
 	@echo "✅ Setup complete! Ready to use."
 	@echo ""
