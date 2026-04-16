@@ -31,6 +31,8 @@ A cryptographically secure IRC-style chat application with end-to-end encryption
 make setup
 ```
 
+> **⚠️ On WSL?** If you see an error about `python3-venv`, see [INSTALLATION_WSL.md](docs/INSTALLATION_WSL.md) - it's automatically handled by `make setup`!
+
 ### Run the Application
 
 **Terminal 1: Start Server**

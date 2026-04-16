@@ -35,13 +35,24 @@ help:
 
 setup:
 	@echo "🔧 Setting up project..."
+	@echo "🔍 Checking system dependencies..."
+	@if ! python3 -m venv --help > /dev/null 2>&1; then \
+		echo "⚠️  python3-venv not found. Installing..."; \
+		if command -v apt-get > /dev/null; then \
+			sudo apt-get update && sudo apt-get install -y python3-venv; \
+		else \
+			echo "❌ Could not install python3-venv automatically."; \
+			echo "   Please install manually: sudo apt install python3-venv"; \
+			exit 1; \
+		fi \
+	fi
 	@if [ ! -d "venv" ]; then \
 		echo "📦 Creating virtual environment..."; \
 		python3 -m venv venv; \
 		echo "✅ Virtual environment created"; \
 	fi
 	@echo "📦 Installing dependencies..."
-	@. venv/bin/activate && pip3 install -r requirements.txt
+	@. venv/bin/activate && pip3 install --upgrade pip && pip3 install -r requirements.txt
 	@echo "✅ Setup complete! Ready to use."
 	@echo ""
 	@echo "Next steps:"

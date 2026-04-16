@@ -5,39 +5,33 @@ This folder contains the project documentation organized for different audiences
 ## Quick Links
 
 ### 🚀 For Getting Started
-- **[../COMMENCER_ICI.md](../COMMENCER_ICI.md)** - Start here! Quick setup guide
+- **[../README.md](../README.md)** - Start here! Project overview and quick start
+- **[INSTALLATION_WSL.md](INSTALLATION_WSL.md)** - ⚠️ Having venv issues on WSL? Read this!
+- **[../COMMANDS.md](../COMMANDS.md)** - Chat commands reference
 
 ### 📚 For Learning
-- **[../README.md](../README.md)** - Complete project overview
-- **[../crypto_vibeness.md](../crypto_vibeness.md)** - Project description and features
-- **[../PROJECT_STATE.md](../PROJECT_STATE.md)** - Current project status
+- **[../crypto_vibeness.md](../crypto_vibeness.md)** - Project description and vision
+- **[MANUAL_TESTING.md](MANUAL_TESTING.md)** - How to test the application
+- **[TESTING_QUICK_REFERENCE.md](TESTING_QUICK_REFERENCE.md)** - Quick test commands
 
 ### 👨‍💻 For Development
-- **[../DEVELOPMENT.md](../DEVELOPMENT.md)** - Development guide and architecture
-- **[../CONTRIBUTING.md](../CONTRIBUTING.md)** - Contributing guidelines
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contributing guidelines
 - **[../Makefile](../Makefile)** - Available development commands
+- **[Ressource_vibe/](Ressource_vibe/)** - Implementation details and stages
 
 ### 📖 Implementation Stages
-- **[../JOUR1_PARTIE1.md](../JOUR1_PARTIE1.md)** - Stage 1: Chat IRC
-- **[../JOUR1_PARTIE2.md](../JOUR1_PARTIE2.md)** - Stage 2: Authentication MD5
-- **[../JOUR2_PARTIE1.md](../JOUR2_PARTIE1.md)** - Stage 3: Bcrypt Hashing
-- **[../JOUR2_PARTIE2.md](../JOUR2_PARTIE2.md)** - Stage 4: AES-256 Encryption
-- **[../JOUR3_PARTIE1.md](../JOUR3_PARTIE1.md)** - Stage 5: RSA Key Exchange
-- **[../JOUR3_PARTIE2.md](../JOUR3_PARTIE2.md)** - Stage 6: E2EE + Signatures
+Located in **[Ressource_vibe/](Ressource_vibe/)**:
+- **JOUR1_PARTIE1.md** - Stage 1: Chat IRC
+- **JOUR1_PARTIE2.md** - Stage 2: Authentication MD5
+- **JOUR2_PARTIE1.md** - Stage 3: Bcrypt Hashing
+- **JOUR2_PARTIE2.md** - Stage 4: AES-256 Encryption
+- **JOUR3_PARTIE1.md** - Stage 5: RSA Key Exchange
+- **JOUR3_PARTIE2.md** - Stage 6: E2EE + Signatures
 
-### 📦 Project Files
-- **[../LICENSE](../LICENSE)** - MIT License
-- **[../requirements.txt](../requirements.txt)** - Python dependencies
-- **[../pyproject.toml](../pyproject.toml)** - Python project config
-
-## Archive
-
-The **[archive/](archive/)** folder contains development documentation and guides used during the project implementation. See [archive/README.md](archive/README.md) for details.
-
-## Project Status
+## ✅ Project Status
 
 ✅ **6/6 Stages Complete**
-✅ **120/120 Validation Criteria Passed**
+✅ **24/24 Validation Tests Passing**
 ✅ **100% Project Completion**
 
 ## Key Features
@@ -49,18 +43,19 @@ The **[archive/](archive/)** folder contains development documentation and guide
 - 🔓 RSA-2048 asymmetric key exchange (OAEP)
 - ✍️ RSA-PSS digital signatures with SHA256 (non-repudiation)
 
-### Architecture
+### Chat Features
 - 💬 Full IRC chat server with authentication
 - 🚀 Real-time encrypted messaging
 - 🏠 Room support with shared encryption
 - 📱 1-on-1 private conversations with end-to-end encryption
 - ✅ Message authentication and non-repudiation
+- 🔒✓ Visual signature indicators
 
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
-# 1. Install dependencies
-make install
+# 1. Setup everything (auto-installs system deps)
+make setup
 
 # 2. Run validation tests
 make test
@@ -72,13 +67,13 @@ make run
 make client
 ```
 
-## Need Help?
+## ❓ Need Help?
 
-1. **Getting started?** → Read [../COMMENCER_ICI.md](../COMMENCER_ICI.md)
-2. **Want to develop?** → Read [../DEVELOPMENT.md](../DEVELOPMENT.md)
-3. **Contributing?** → Read [../CONTRIBUTING.md](../CONTRIBUTING.md)
-4. **Need commands?** → Run `make help`
+1. **Getting started?** → Read [../README.md](../README.md)
+2. **Issues with venv on WSL?** → Read [INSTALLATION_WSL.md](INSTALLATION_WSL.md)
+3. **Want to test?** → Read [MANUAL_TESTING.md](MANUAL_TESTING.md)
+4. **Need all commands?** → Run `make help`
 
 ---
 
-*Complete documentation for Crypto Vibeness educational cryptography project*
+*Complete documentation for Crypto Vibeness - Educational cryptography project*
